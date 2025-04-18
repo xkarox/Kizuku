@@ -1,0 +1,57 @@
+﻿@page "/"
+@inject HttpClient httpClient
+
+<PageTitle>Home</PageTitle>
+
+<h1>Hello, world!</h1>
+
+<AuthorizeView Roles="Admin">
+    <Authorized>
+        <p>You are a <code>Admin</code> Harry</p>
+    </Authorized>
+    <NotAuthorized>
+        <p>You are a <code>NOT ADMIN</code> Harry</p>
+    </NotAuthorized>
+</AuthorizeView>
+
+<AuthorizeView Roles="User">
+    <Authorized>
+        <p>You are a <code>User</code> Harry</p>
+    </Authorized>
+    <NotAuthorized>
+        <p>You are a <code>NOT USER</code> Harry</p>
+    </NotAuthorized>
+</AuthorizeView>
+
+<AuthorizeView>
+    <Authorized>
+        <p>You are a <code>AUTHORIZED</code> Harry</p>
+    </Authorized>
+    <NotAuthorized>
+        <p>You are a <code>NOT AUTHORIZED</code> Harry</p>
+    </NotAuthorized>
+</AuthorizeView>
+
+<button @onclick="Click">Click</button>
+
+
+Welcome to your new app.
+
+@code{
+
+    public async Task Click()
+    {
+        Console.WriteLine("clicked");
+        try
+        {
+            var response = await httpClient.GetAsync("WeatherForecast");
+            Console.WriteLine(response);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+        }
+        
+    }
+
+}
