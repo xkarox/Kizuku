@@ -95,6 +95,6 @@ Project Link: [https://github.com/xkarox/Kizuku](https://github.com/your_usernam
 
 ## 🙏 Acknowledgements
 
-*   [List any resources, libraries, or individuals you want to thank here]
+
 
 
