@@ -14,7 +14,7 @@ public class PasswordValidator
         bool hasSpecialChar = password.Any(c => !char.IsLetterOrDigit(c));
 
         if(!(hasMinLength && hasUpperCase && hasLowerCase && hasDigit && hasSpecialChar))
-            return Result.Failure(new PasswordValidationError(
+            return Result.Failure(new PasswordRegistrationValidationError(
                 hasMinLength,
                 hasUpperCase,
                 hasLowerCase,

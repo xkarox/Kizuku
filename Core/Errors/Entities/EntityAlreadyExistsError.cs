@@ -12,6 +12,6 @@ public class EntityAlreadyExistsError<T> : IError
 
     public EntityAlreadyExistsError(string propertyName, string propertyValue)
     {
-        _message = $"{typeof(T).Name} with {propertyName}: {propertyValue} not found";
+        _message = $"{typeof(T).Name} with {propertyName} {propertyValue} already exists";
     }
 }

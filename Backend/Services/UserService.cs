@@ -8,7 +8,7 @@ namespace Backend.Services;
 
 public class UserService(
     IUserRepository userRepository,
-    IAuthenticationService authenticationService,
+    IAuthenticationService authenticationService
     ) : IUserService
 {
     public async Task<Result<User>> RegisterUser(RegistrationRequest request)
@@ -50,5 +50,7 @@ public class UserService(
         {
             return Result.Failure(passwordValidationResult.Error);
         }
+        
+        return Result.Success();
     }
 }

@@ -15,11 +15,11 @@ public class EntityNotFoundError<T> : IError
     
     public EntityNotFoundError(Guid id)
     {
-        _message = $"{typeof(T).Name} with Id: {id} not found";
+        _message = $"{typeof(T).Name} with Id {id} not found";
     }
     
     public EntityNotFoundError(string propertyName, string propertyValue)
     {
-        _message = $"{typeof(T).Name} with {propertyName}: {propertyValue} not found";
+        _message = $"{typeof(T).Name} with {propertyName} {propertyValue} not found";
     }
 }

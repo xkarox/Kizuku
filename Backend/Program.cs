@@ -1,16 +1,17 @@
 using Backend.Infrastructure;
+using Backend.Json;
 using Backend.Repositories;
+using Backend.Services;
 using Core;
-using Core.Entities;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
 var connectionString = builder.Configuration
-                           .GetConnectionString("DatabaseConnection")
+                           .GetConnectionString("Database")
                        ?? throw new InvalidOperationException(
-                           "Connection string 'DatabaseConnection' not found.");
+                           "Connection string 'Database' not found.");
 
 builder.Services.AddDbContext<KizukuContext>(options =>
     options.UseSqlite($"Data Source={connectionString}"));
@@ -29,14 +30,29 @@ builder.Services
         options.LogoutPath = "/Logout";
     });
 
-builder.Services.AddControllers();
+builder.Services.AddControllers()
+    .AddJsonOptions(opts =>
+        opts.JsonSerializerOptions
+            .Converters
+            .Add(new ErrorConverterFactory()));;
 builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen(c =>
+{
+    c.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo
+    {
+        Title = "Kizuku API",
+        Version = "v1"
+    });
+});
+
+
 
 // Repositories for data access
-builder.Services.AddScoped<IUserRepository>();
+builder.Services.AddScoped<IUserRepository, UserRepository>();
 
 // Services for business logic
-builder.Services.AddScoped<IAuthenticationService>();
+builder.Services.AddScoped<IAuthenticationService, AuthenticationService>();
+builder.Services.AddScoped<IUserService, UserService>();
 
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
@@ -46,6 +62,12 @@ var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
+    app.UseSwagger();
+    app.UseSwaggerUI(c =>
+    {
+        c.SwaggerEndpoint("/swagger/v1/swagger.json", "Kizuku API v1");
+        c.RoutePrefix = "";
+    });
 }
 
 app.UseHttpsRedirection();

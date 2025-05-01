@@ -4,6 +4,7 @@ using Backend.Infrastructure;
 using Core;
 using Core.Entities;
 using Core.Requests;
+using Core.Responses;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
@@ -26,7 +27,7 @@ public class AuthController(
             .ValidateCredentials(request.Email, request.Password);
         if (credentialsValidation.IsError)
         {
-            return Unauthorized(credentialsValidation.ErrorMessage);
+            return Unauthorized(credentialsValidation.Error);
         }
         
         var user = credentialsValidation.Data;
@@ -43,7 +44,7 @@ public class AuthController(
             claimsPrincipal,
             authProperties);
         
-        return Ok();
+        return Ok(user!.ToLoginResponse());
     }
     
     [HttpPost("register")]
@@ -55,7 +56,7 @@ public class AuthController(
             return BadRequest(registration.Error);
         }
         
-        return Ok(registration.Data);
+        return Ok(registration.Data!.ToRegistrationResponse());
     }
     
     [HttpPost("logout")]

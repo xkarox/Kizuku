@@ -15,11 +15,5 @@ public class User : IEntity
     public required string Password { get; set; }
     [EmailAddress]
     public required string Email { get; set; }
-    public DateTime RegisteredAt { get; set; }
-
-    public override string ToString()
-    {
-        return 
-            $"{{ UserId: {UserId}, User: {Username}, Email: {Email}, RegisteredAt: {RegisteredAt} }}";
-    }
+    public DateTimeOffset RegisteredAt { get; set; }
 }

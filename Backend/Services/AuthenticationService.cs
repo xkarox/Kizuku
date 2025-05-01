@@ -22,10 +22,9 @@ public class AuthenticationService(
             return Result<User>.Failure(getUserByEmailResult.Error);
 
         var user = getUserByEmailResult.Data;
-        var passwordHash = BC.HashPassword(password, 12);
         
-        return !VerifyPassword(passwordHash, user!.Password) 
-            ? Result<User>.Failure(new InvalidPasswordError()) 
+        return !VerifyPassword(password, user!.Password) 
+            ? Result<User>.Failure(new PasswordValidationError()) 
             : Result<User>.Success(user);
     }
 
@@ -51,6 +50,6 @@ public class AuthenticationService(
 
     private bool VerifyPassword(string password, string passwordHash)
     {
-        return BC.Verify(passwordHash, password);
+        return BC.Verify(password, passwordHash);
     }
 }

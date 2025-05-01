@@ -3,7 +3,7 @@ using Core.Entities;
 
 namespace Core.Requests;
 
-public record RegistrationRequest
+public record RegistrationRequest : IRequest
 {
     [MinLength(3), MaxLength(30), Required]
     public required string Username { get; init; }
@@ -23,7 +23,7 @@ public static class RegistrationRequestExtensions
             Username = request.Username,
             Password = passwordHash,
             Email = request.Email,
-            RegisteredAt = DateTime.Now
+            RegisteredAt = DateTime.UtcNow
         };
     }
     
@@ -35,7 +35,7 @@ public static class RegistrationRequestExtensions
             Username = request.Username,
             Password = hashPasswordFunc(request.Password),
             Email = request.Email,
-            RegisteredAt = DateTime.Now
+            RegisteredAt = DateTime.UtcNow
         };
     }
 }

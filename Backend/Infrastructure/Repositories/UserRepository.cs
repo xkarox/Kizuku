@@ -52,7 +52,9 @@ public class UserRepository(
         {
             var result = await query.FirstOrDefaultAsync();
             if (result is null)
-                return Result<User>.Failure(new EntityNotFoundError<User>());
+                return Result<User>.Failure(
+                    new EntityNotFoundError<User>(nameof(User.UserId), 
+                        id.ToString()));
             return Result<User>.Success(result);
         }
         catch (ArgumentNullException e)
@@ -69,7 +71,7 @@ public class UserRepository(
         {
             var result = await query.FirstOrDefaultAsync();
             if (result is null)
-                return Result<User>.Failure(new EntityNotFoundError<User>());
+                return Result<User>.Failure(new EntityNotFoundError<User>(entity));
             return Result<User>.Success(result);
         }
         catch (ArgumentNullException e)
