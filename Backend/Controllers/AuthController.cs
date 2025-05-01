@@ -3,6 +3,7 @@ using System.Security.Claims;
 using Backend.Infrastructure;
 using Core;
 using Core.Entities;
+using Core.Errors;
 using Core.Requests;
 using Core.Responses;
 using Microsoft.AspNetCore.Authentication;
@@ -21,6 +22,8 @@ public class AuthController(
     ) : ControllerBase
 {
     [HttpPost("login")]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(LoginResponse))]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(IError))]
     public async Task<IActionResult> Login([FromBody] LoginRequest request)
     {
         var credentialsValidation = await authenticationService
@@ -30,7 +33,7 @@ public class AuthController(
             return Unauthorized(credentialsValidation.Error);
         }
         
-        var user = credentialsValidation.Data;
+        var user = credentialsValidation.Value;
         var claimsPrincipal = authenticationService.GetClaimsPrincipal(user!);
         
         var authProperties = new AuthenticationProperties
@@ -48,6 +51,8 @@ public class AuthController(
     }
     
     [HttpPost("register")]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(RegistrationResponse))]
+    [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(IError))]
     public async Task<IActionResult> Register([FromBody] RegistrationRequest request)
     {
         var registration = await userService.RegisterUser(request);
@@ -56,7 +61,7 @@ public class AuthController(
             return BadRequest(registration.Error);
         }
         
-        return Ok(registration.Data!.ToRegistrationResponse());
+        return Ok(registration.Value!.ToRegistrationResponse());
     }
     
     [HttpPost("logout")]

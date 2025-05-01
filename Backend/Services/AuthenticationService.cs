@@ -21,7 +21,7 @@ public class AuthenticationService(
         if (getUserByEmailResult.IsError)
             return Result<User>.Failure(getUserByEmailResult.Error);
 
-        var user = getUserByEmailResult.Data;
+        var user = getUserByEmailResult.Value;
         
         return !VerifyPassword(password, user!.Password) 
             ? Result<User>.Failure(new PasswordValidationError()) 

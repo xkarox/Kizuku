@@ -30,7 +30,7 @@ public class ErrorConverter<TError> : JsonConverter<TError>
         JsonSerializerOptions options)
     {
         writer.WriteStartObject();
-        writer.WriteString("code",    value.GetType().Name);
+        writer.WriteString("code",    value.Code);
         writer.WriteString("message", value.Message);
         writer.WriteEndObject();
     }

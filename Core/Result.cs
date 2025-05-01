@@ -33,10 +33,10 @@ public class Result
 
 public class Result<T> : Result
 {
-    public T? Data { get; set; }
+    public T? Value { get; set; }
     
     public static Result<T> Success(T data) 
-        => new() { IsSuccess = true, Data = data };
+        => new() { IsSuccess = true, Value = data };
     
     public static Result<T> Failure(IError error, string? overrideMessage = null)
         => new()

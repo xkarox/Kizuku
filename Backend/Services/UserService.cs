@@ -26,7 +26,7 @@ public class UserService(
             return Result<User>.Failure(registration.Error);
         }
         
-        return Result<User>.Success(registration.Data!);
+        return Result<User>.Success(registration.Value!);
     }
     
     private async Task<Result> ValidateRegistrationRequest(RegistrationRequest request)
