@@ -1,6 +1,6 @@
 using Backend.Infrastructure;
+using Backend.Infrastructure.Repositories;
 using Backend.Json;
-using Backend.Repositories;
 using Backend.Services;
 using Core;
 using Microsoft.AspNetCore.Authentication.Cookies;
@@ -13,7 +13,7 @@ var connectionString = builder.Configuration
                        ?? throw new InvalidOperationException(
                            "Connection string 'Database' not found.");
 
-builder.Services.AddDbContext<KizukuContext>(options =>
+builder.Services.AddDbContext<IKizukuContext, KizukuContext>(options =>
     options.UseSqlite($"Data Source={connectionString}"));
 
 // Cookie Authentication

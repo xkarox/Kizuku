@@ -6,10 +6,10 @@ using Core.Errors.Database;
 using Core.Errors.Entities;
 using Microsoft.EntityFrameworkCore;
 
-namespace Backend.Repositories;
+namespace Backend.Infrastructure.Repositories;
 
 public class UserRepository(
-    KizukuContext db
+    IKizukuContext db
     ) : IUserRepository
 {
     public async Task<Result<User>> Create(User entity)

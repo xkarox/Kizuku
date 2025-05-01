@@ -1,9 +1,7 @@
 using System.Security.Claims;
-using Backend.Repositories;
 using Core;
 using Core.Entities;
 using Core.Errors.Authentication;
-using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using BC = BCrypt.Net.BCrypt;
 using IAuthenticationService = Core.IAuthenticationService;

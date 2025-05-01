@@ -29,7 +29,6 @@
 
     <ItemGroup>
       <Folder Include="Infrastructure\Migrations\" />
-      <Folder Include="Test\" />
     </ItemGroup>
 
 </Project>
