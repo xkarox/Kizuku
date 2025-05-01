@@ -1,19 +1,22 @@
 using Backend.Infrastructure;
 using Core;
 using Core.Entities;
+using Core.Errors;
+using Core.Errors.Database;
+using Core.Errors.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace Backend.Repositories;
 
 public class UserRepository(
     KizukuContext db
-    ) : IRepository<User>
+    ) : IUserRepository
 {
     public async Task<Result<User>> Create(User entity)
     {
         if (entity == null)
             return Result<User>
-                .Failure(new ArgumentNullException(nameof(entity)).Message);
+                .Failure(new EntityNullError<User>());
         db.Users.Add(entity);
         try
         {
@@ -22,7 +25,7 @@ public class UserRepository(
         }
         catch (DbUpdateException e)
         {
-            return Result<User>.Failure(e.Message);
+            return Result<User>.Failure(new DatabaseError(e.Message));
         }
     }
 
@@ -36,7 +39,8 @@ public class UserRepository(
         }
         catch (ArgumentNullException e)
         {
-            return Result<IEnumerable<User>>.Failure(e.Message);
+            return Result<IEnumerable<User>>.Failure(
+                new EntityNullError<KizukuContext>());
         }
     }
 
@@ -48,12 +52,12 @@ public class UserRepository(
         {
             var result = await query.FirstOrDefaultAsync();
             if (result is null)
-                return Result<User>.Failure("User not found");
+                return Result<User>.Failure(new EntityNotFoundError<User>());
             return Result<User>.Success(result);
         }
         catch (ArgumentNullException e)
         {
-            return Result<User>.Failure(e.Message);
+            return Result<User>.Failure(new EntityNullError<KizukuContext>());
         }
     }
 
@@ -65,12 +69,12 @@ public class UserRepository(
         {
             var result = await query.FirstOrDefaultAsync();
             if (result is null)
-                return Result<User>.Failure("User not found");
+                return Result<User>.Failure(new EntityNotFoundError<User>());
             return Result<User>.Success(result);
         }
         catch (ArgumentNullException e)
         {
-            return Result<User>.Failure(e.Message);
+            return Result<User>.Failure(new EntityNullError<KizukuContext>());
         }
     }
 
@@ -84,7 +88,7 @@ public class UserRepository(
         }
         catch (DbUpdateException e)
         {
-            return Result.Failure(e.Message);
+            return Result.Failure(new DatabaseError(e.Message));
         }
     }
 
@@ -98,7 +102,43 @@ public class UserRepository(
         }
         catch (DbUpdateException e)
         {
-            return Result.Failure(e.Message);
+            return Result.Failure(new DatabaseError(e.Message));
+        }
+    }
+
+    public async Task<Result<User>> GetUserByEmail(string email)
+    {
+        var query = db.Users.AsQueryable()
+            .Where(u => u.Email == email);
+        try
+        {
+            var result = await query.FirstOrDefaultAsync();
+            if (result is null)
+                return Result<User>.Failure(
+                    new EntityNotFoundError<User>(nameof(User.Email), email));
+            return Result<User>.Success(result);
+        }
+        catch (ArgumentNullException e)
+        {
+            return Result<User>.Failure(new EntityNullError<KizukuContext>());
+        }
+    }
+    
+    public async Task<Result<User>> GetUserByUsername(string username)
+    {
+        var query = db.Users.AsQueryable()
+            .Where(u => u.Username == username);
+        try
+        {
+            var result = await query.FirstOrDefaultAsync();
+            if (result is null)
+                return Result<User>.Failure(
+                    new EntityNotFoundError<User>(nameof(User.Username), username));
+            return Result<User>.Success(result);
+        }
+        catch (ArgumentNullException e)
+        {
+            return Result<User>.Failure(new EntityNullError<KizukuContext>());
         }
     }
 }

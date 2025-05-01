@@ -1,18 +1,33 @@
+using Core.Errors;
+
 namespace Core;
 
 public class Result
 {
     public bool IsSuccess { get; init; }
     
-    public bool IsFailure => !IsSuccess;
+    public bool IsError => !IsSuccess;
     
-    public string? FailureMessage { get; set; }
+    public IError Error { get; init; } = null!;
+    
+    private readonly string? _overrideMessage;
+    
+    public string ErrorMessage
+    {
+        get => _overrideMessage ?? Error.Message;
+        init => _overrideMessage = value;
+    }
     
     public static Result Success() 
         => new() { IsSuccess = true};
     
-    public static Result Failure(string? message = null)
-        => new() { IsSuccess = false, FailureMessage = message };
+    public static Result Failure(IError? error = null, string? overrideMessage = null)
+        => new()
+        {
+            IsSuccess = false,
+            Error      = error ?? new Error(),
+            ErrorMessage = overrideMessage!
+        };
 }
 
 
@@ -23,6 +38,11 @@ public class Result<T> : Result
     public static Result<T> Success(T data) 
         => new() { IsSuccess = true, Data = data };
     
-    public static Result<T> Failure(string? message = null)
-        => new() { IsSuccess = false, FailureMessage = message };
+    public static Result<T> Failure(IError error, string? overrideMessage = null)
+        => new()
+        {
+            IsSuccess = false,
+            Error      = error,
+            ErrorMessage = overrideMessage!
+        };
 }

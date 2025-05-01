@@ -10,4 +10,8 @@
       <Folder Include="Responses\" />
     </ItemGroup>
 
+    <ItemGroup>
+      <PackageReference Include="Microsoft.EntityFrameworkCore.Abstractions" Version="9.0.4" />
+    </ItemGroup>
+
 </Project>

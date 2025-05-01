@@ -1,4 +1,7 @@
 using Backend.Infrastructure;
+using Backend.Repositories;
+using Core;
+using Core.Entities;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
 
@@ -19,15 +22,21 @@ builder.Services
     {
         options.Cookie.HttpOnly = true;
         options.Cookie.SameSite = SameSiteMode.Lax;
-        options.ExpireTimeSpan = TimeSpan.FromHours(1);
+        options.ExpireTimeSpan = TimeSpan.FromHours(30);
         options.SlidingExpiration = true;
         options.AccessDeniedPath = "/Forbidden";
         options.LoginPath = "/Login";
         options.LogoutPath = "/Logout";
     });
 
-// Add services to the container.
 builder.Services.AddControllers();
+builder.Services.AddEndpointsApiExplorer();
+
+// Repositories for data access
+builder.Services.AddScoped<IUserRepository>();
+
+// Services for business logic
+builder.Services.AddScoped<IAuthenticationService>();
 
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();

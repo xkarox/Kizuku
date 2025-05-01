@@ -1,6 +1,6 @@
 namespace Core;
 
-public interface IRepository<T>
+public interface IRepositoryBase<T>
 {
     public Task<Result<T>> Create(T entity);
     
