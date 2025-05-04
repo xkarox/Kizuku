@@ -46,10 +46,10 @@ public class UserRepository(
 
     public async Task<Result<User>> GetById(Guid id)
     {
-        var query = db.Users.Where(u => u.UserId == id)
-            .AsQueryable();
         try
         {
+            var query = db.Users.Where(u => u.UserId == id)
+                .AsQueryable();
             var result = await query.FirstOrDefaultAsync();
             if (result is null)
                 return Result<User>.Failure(
@@ -59,16 +59,16 @@ public class UserRepository(
         }
         catch (ArgumentNullException e)
         {
-            return Result<User>.Failure(new EntityNullError<KizukuContext>());
+            return Result<User>.Failure(new DatabaseError(e.Message));
         }
     }
 
     public async Task<Result<User>> Get(User entity)
     {
-        var query = db.Users.Where(u => u.Equals(entity))
-            .AsQueryable();
         try
         {
+            var query = db.Users.Where(u => u.Equals(entity))
+                .AsQueryable();
             var result = await query.FirstOrDefaultAsync();
             if (result is null)
                 return Result<User>.Failure(new EntityNotFoundError<User>(entity));

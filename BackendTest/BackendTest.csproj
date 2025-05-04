@@ -10,6 +10,7 @@
 
     <ItemGroup>
         <PackageReference Include="coverlet.collector" Version="6.0.2"/>
+        <PackageReference Include="EntityFrameworkCore.Testing.Moq" Version="9.0.1" />
         <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.12.0"/>
         <PackageReference Include="Microsoft.Playwright.NUnit" Version="1.45.1"/>
         <PackageReference Include="Moq.EntityFrameworkCore" Version="9.0.0.5" />

@@ -7,6 +7,7 @@ using Core.Errors.Entities;
 using Microsoft.EntityFrameworkCore;
 using Moq;
 using Moq.EntityFrameworkCore;
+using Moq.EntityFrameworkCore.Dynamic;
 
 namespace BackendTest.Unit.Infrastructure.Repositories;
 
@@ -14,6 +15,7 @@ namespace BackendTest.Unit.Infrastructure.Repositories;
 public class UserRepositoryTests
 {
     private Mock<IKizukuContext> _mockContext;
+    private Mock<DbSet<User>> _mockDbSet;
     private UserRepository _repository;
     private List<User> _users;
 
@@ -40,6 +42,8 @@ public class UserRepositoryTests
 
         _mockContext = new Mock<IKizukuContext>();
         _mockContext.Setup(c => c.Users).ReturnsDbSet(_users);
+        
+        _mockDbSet = new Mock<DbSet<User>>();
         
         _repository = new UserRepository(_mockContext.Object);
     }
@@ -73,7 +77,7 @@ public class UserRepositoryTests
     }
     
     [Test]
-    public async Task Create_WithValidUserButInvalidDbContext_ReturnsDatabaseError()
+    public async Task Create_WhenDbSavesChanges_ReturnsDatabaseError()
     {
         var user = new User
         {
@@ -111,6 +115,112 @@ public class UserRepositoryTests
             Assert.That(result.Error, Is.Not.Null);
             Assert.That(result.Error.GetType(), 
                 Is.EqualTo(typeof(EntityNullError<User>)));
+        });
+    }
+    
+    [Test]
+    public async Task GetById_WithValidUser_ReturnsUser()
+    {
+        var user = _users.First();
+        var id = user.UserId;
+        
+        var result = await _repository.GetById(id);
+        
+        Assert.That(result, Is.Not.Null);
+        Assert.Multiple(() =>
+        {
+            Assert.That(result.IsSuccess, Is.True);
+            Assert.That(result.Value, Is.Not.Null);
+        });
+        Assert.That(result.Value, Is.EqualTo(user));
+    }
+    
+    [Test]
+    public async Task GetById_WithInvalidUser_ReturnsEntityNotFoundError()
+    {
+        var id = Guid.NewGuid();
+        
+        var result = await _repository.GetById(id);
+        
+        Assert.That(result, Is.Not.Null);
+        Assert.Multiple(() =>
+        {
+            Assert.That(result.IsError, Is.True);
+            Assert.That(result.Error, Is.Not.Null);
+        });
+        var type = result.Error.GetType();
+        Assert.That(type, Is.EqualTo(typeof(EntityNotFoundError<User>)));
+    }
+    
+    [Test]
+    public async Task GetById_WhenDbAccessThrowsArgumentNull_ReturnsDatabaseError()
+    {
+        var userIdToQuery = Guid.NewGuid();
+        var dbException = new ArgumentNullException("db", "Simulierte Exception beim DB-Zugriff.");
+        _mockContext.Setup(m => m.Users)
+            .Throws(dbException);
+        
+        var result = await _repository.GetById(userIdToQuery);
+
+        Assert.That(result, Is.Not.Null);
+        Assert.Multiple(() =>
+        {
+            Assert.That(result.IsError, Is.True);
+            Assert.That(result.Error, Is.Not.Null);
+            Assert.That(result.Error, Is.TypeOf<DatabaseError>());
+        });
+    }
+    
+    [Test]
+    public async Task Get_WithValidUser_ReturnsUser()
+    {
+        var user = _users.First();
+        var id = user.UserId;
+        
+        var result = await _repository.GetById(id);
+        
+        Assert.That(result, Is.Not.Null);
+        Assert.Multiple(() =>
+        {
+            Assert.That(result.IsSuccess, Is.True);
+            Assert.That(result.Value, Is.Not.Null);
+        });
+        Assert.That(result.Value, Is.EqualTo(user));
+    }
+    
+    [Test]
+    public async Task Get_WithInvalidUser_ReturnsEntityNotFoundError()
+    {
+        var id = Guid.NewGuid();
+        
+        var result = await _repository.GetById(id);
+        
+        Assert.That(result, Is.Not.Null);
+        Assert.Multiple(() =>
+        {
+            Assert.That(result.IsError, Is.True);
+            Assert.That(result.Error, Is.Not.Null);
+        });
+        var type = result.Error.GetType();
+        Assert.That(type, Is.EqualTo(typeof(EntityNotFoundError<User>)));
+    }
+    
+    [Test]
+    public async Task Get_WhenDbAccessThrowsArgumentNull_ReturnsDatabaseError()
+    {
+        var userIdToQuery = Guid.NewGuid();
+        var dbException = new ArgumentNullException("db", "Simulierte Exception beim DB-Zugriff.");
+        _mockContext.Setup(m => m.Users)
+            .Throws(dbException);
+        
+        var result = await _repository.GetById(userIdToQuery);
+
+        Assert.That(result, Is.Not.Null);
+        Assert.Multiple(() =>
+        {
+            Assert.That(result.IsError, Is.True);
+            Assert.That(result.Error, Is.Not.Null);
+            Assert.That(result.Error, Is.TypeOf<DatabaseError>());
         });
     }
 }
