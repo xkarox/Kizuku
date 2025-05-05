@@ -31,16 +31,15 @@ public class UserRepository(
 
     public async Task<Result<IEnumerable<User>>> GetAll()
     {
-        var query = db.Users.AsQueryable();
         try
         {
-            var result = await query.ToListAsync();
+            var result = await db.Users.ToListAsync();
             return Result<IEnumerable<User>>.Success(result);
         }
         catch (ArgumentNullException e)
         {
             return Result<IEnumerable<User>>.Failure(
-                new EntityNullError<KizukuContext>());
+                new DatabaseError(e.Message));
         }
     }
 
@@ -76,16 +75,28 @@ public class UserRepository(
         }
         catch (ArgumentNullException e)
         {
-            return Result<User>.Failure(new EntityNullError<KizukuContext>());
+            return Result<User>.Failure(new DatabaseError(e.Message));
         }
     }
 
     public async Task<Result> Update(User entity)
     { 
-        db.Users.Update(entity);
+        var entityToUpdate = await db.Users.Where(e => e.UserId == entity.UserId).FirstOrDefaultAsync(); 
+
+        if (entityToUpdate == null)
+        {
+            return Result.Failure(new EntityNotFoundError<User>(entity)); 
+        }
+        
+        entityToUpdate!.Username = entity.Username;
+        entityToUpdate.Email = entity.Email;
+        entityToUpdate.Password = entity.Password;
+        
         try
         {
-            await db.SaveChangesAsync();
+            var opResult = await db.SaveChangesAsync();
+            if (opResult != 1)
+                return Result.Failure(new DatabaseError($"Failed to update user: {entity}"));
             return Result.Success();
         }
         catch (DbUpdateException e)
@@ -96,10 +107,20 @@ public class UserRepository(
 
     public async Task<Result> Delete(User entity)
     {
-        db.Users.Remove(entity);
+        var entityToDelete = await db.Users.Where(e => e.UserId == entity.UserId).FirstOrDefaultAsync(); 
+
+        if (entityToDelete == null)
+        {
+            return Result.Failure(new EntityNotFoundError<User>(entity)); 
+        }
+        
+        db.Users.Remove(entityToDelete);
+        
         try
         {
-            await db.SaveChangesAsync();
+            var opResult = await db.SaveChangesAsync();
+            if (opResult != 1)
+                return Result.Failure(new DatabaseError($"Failed to delete user: {entity}"));
             return Result.Success();
         }
         catch (DbUpdateException e)
@@ -108,12 +129,11 @@ public class UserRepository(
         }
     }
 
-    public async Task<Result<User>> GetUserByEmail(string email)
+    public async Task<Result<User>> GetByEmail(string email)
     {
-        var query = db.Users.AsQueryable()
-            .Where(u => u.Email == email);
         try
         {
+            var query = db.Users.Where(u => u.Email == email);
             var result = await query.FirstOrDefaultAsync();
             if (result is null)
                 return Result<User>.Failure(
@@ -122,16 +142,16 @@ public class UserRepository(
         }
         catch (ArgumentNullException e)
         {
-            return Result<User>.Failure(new EntityNullError<KizukuContext>());
+            return Result<User>.Failure(new DatabaseError(e.Message));
         }
     }
     
-    public async Task<Result<User>> GetUserByUsername(string username)
+    public async Task<Result<User>> GetByUsername(string username)
     {
-        var query = db.Users.AsQueryable()
-            .Where(u => u.Username == username);
         try
         {
+            var query = db.Users
+                .Where(u => u.Username == username);
             var result = await query.FirstOrDefaultAsync();
             if (result is null)
                 return Result<User>.Failure(
@@ -140,7 +160,7 @@ public class UserRepository(
         }
         catch (ArgumentNullException e)
         {
-            return Result<User>.Failure(new EntityNullError<KizukuContext>());
+            return Result<User>.Failure(new DatabaseError(e.Message));
         }
     }
 }

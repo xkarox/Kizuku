@@ -3,12 +3,15 @@ using Core;
 using Core.Entities;
 using Core.Errors.Entities;
 using Core.Requests;
+using Core.Validators;
+using Microsoft.AspNetCore.Identity;
 
 namespace Backend.Services;
 
 public class UserService(
     IUserRepository userRepository,
-    IAuthenticationService authenticationService
+    IAuthenticationService authenticationService,
+    IPasswordValidator passwordValidator
     ) : IUserService
 {
     public async Task<Result<User>> RegisterUser(RegistrationRequest request)
@@ -31,21 +34,21 @@ public class UserService(
     
     private async Task<Result> ValidateRegistrationRequest(RegistrationRequest request)
     {
-        var findUserWithEmailResult = await userRepository.GetUserByEmail(request.Email);
+        var findUserWithEmailResult = await userRepository.GetByEmail(request.Email);
         if (findUserWithEmailResult.IsSuccess)
         {
             return Result.Failure(
                 new EntityAlreadyExistsError<User>(nameof(request.Email), request.Email));
         }
         
-        var findUserWithUsernameResult = await userRepository.GetUserByUsername(request.Username);
+        var findUserWithUsernameResult = await userRepository.GetByUsername(request.Username);
         if (findUserWithUsernameResult.IsSuccess)
         {
             return Result.Failure(
                 new EntityAlreadyExistsError<User>(nameof(request.Username), request.Username));
         }
         
-        var passwordValidationResult = PasswordValidator.Validate(request.Password);
+        var passwordValidationResult = passwordValidator.Validate(request.Password);
         if (passwordValidationResult.IsError)
         {
             return Result.Failure(passwordValidationResult.Error);

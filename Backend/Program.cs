@@ -2,7 +2,9 @@ using Backend.Infrastructure;
 using Backend.Infrastructure.Repositories;
 using Backend.Json;
 using Backend.Services;
+using Backend.Validators;
 using Core;
+using Core.Validators;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
 
@@ -51,6 +53,7 @@ builder.Services.AddSwaggerGen(c =>
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 
 // Services for business logic
+builder.Services.AddScoped<IPasswordValidator, PasswordValidator>();
 builder.Services.AddScoped<IAuthenticationService, AuthenticationService>();
 builder.Services.AddScoped<IUserService, UserService>();
 

@@ -15,7 +15,7 @@ public class AuthenticationService(
     public async Task<Result<User>> ValidateCredentials(string email, 
         string password)
     {
-        var getUserByEmailResult = await userRepository.GetUserByEmail(email);
+        var getUserByEmailResult = await userRepository.GetByEmail(email);
         if (getUserByEmailResult.IsError)
             return Result<User>.Failure(getUserByEmailResult.Error);
 

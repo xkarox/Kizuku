@@ -1,11 +1,12 @@
 using Core;
 using Core.Errors.Authentication;
+using Core.Validators;
 
 namespace Backend.Validators;
 
-public class PasswordValidator
+public class PasswordValidator : IPasswordValidator
 {
-    public static Result Validate(string password)
+    public Result Validate(string password)
     {
         bool hasMinLength = password.Length >= 8;
         bool hasUpperCase = password.Any(char.IsUpper);
