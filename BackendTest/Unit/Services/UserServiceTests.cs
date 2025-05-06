@@ -3,6 +3,7 @@ using Backend.Services;
 using Backend.Validators;
 using Core;
 using Core.Entities;
+using Core.Errors;
 using Core.Errors.Entities;
 using Core.Requests;
 using Core.Validators;
@@ -81,17 +82,113 @@ public class UserServiceTests
     }
     
     [Test]
-    public void RegisterUser_WithEmailAlreadyExists_ShouldFail()
+    public async Task RegisterUser_WithEmailAlreadyExists_ShouldFail()
     {
+        var email = "test@test.com";
+        var registrationRequest = new RegistrationRequest
+        {
+            Email = email,
+            Password = "password_lol123",
+            Username = "pikachu22",
+        };
+        var successfulResult = Result<User>
+            .Success(new User()
+            {
+                Email = email,
+                Username = "charmander1944",
+                Password = "0e1763a559e2d5dfa46754b9a4f2893f" +
+                           "aedca55bbe925a1552b24ac9543a3edb",
+            });
+        _mockUserRepository.Setup(repository =>
+            repository.GetByEmail(registrationRequest.Email)).ReturnsAsync(successfulResult);
+        _sut = new UserService(_mockUserRepository.Object, 
+            _mockAuthenticationService.Object,
+            _mockPasswordValidator.Object);
+        
+        var registrationResult = await _sut.RegisterUser(registrationRequest);
+        
+        
+        Assert.Multiple(() =>
+        {
+            Assert.That(registrationResult.IsError, Is.True);
+            Assert.That(registrationResult.Error, Is.Not.Null);
+            Assert.That(registrationResult.Error.GetType(), 
+                Is.EqualTo(typeof(EntityAlreadyExistsError<User>)));
+        });
     }
     
     [Test]
-    public void RegisterUser_WithUsernameAlreadyExists_ShouldFail()
+    public async Task RegisterUser_WithUsernameAlreadyExists_ShouldFail()
     {
+        var username = "pikachu22";
+        var registrationRequest = new RegistrationRequest
+        {
+            Email = "test@test.com",
+            Password = "password_lol123",
+            Username = username,
+        };
+        var successfulResult = Result<User>
+            .Success(new User()
+            {
+                Email = "test12312311@test.com",
+                Username = username,
+                Password = "0e1763a559e2d5dfa46754b9a4f2893f" +
+                           "aedca55bbe925a1552b24ac9543a3edb",
+            });
+        var failedResult = Result<User>
+            .Failure(new EntityNotFoundError<User>(nameof(User.Email), nameof(User.Email)));
+        _mockUserRepository.Setup(repository =>
+            repository.GetByEmail(registrationRequest.Email)).ReturnsAsync(failedResult);
+        _mockUserRepository.Setup(repository =>
+            repository.GetByUsername(registrationRequest.Username)).ReturnsAsync(successfulResult);
+        _sut = new UserService(_mockUserRepository.Object, 
+            _mockAuthenticationService.Object,
+            _mockPasswordValidator.Object);
+        
+        var registrationResult = await _sut.RegisterUser(registrationRequest);
+        
+        
+        Assert.Multiple(() =>
+        {
+            Assert.That(registrationResult.IsError, Is.True);
+            Assert.That(registrationResult.Error, Is.Not.Null);
+            Assert.That(registrationResult.Error.GetType(), 
+                Is.EqualTo(typeof(EntityAlreadyExistsError<User>)));
+        });
     }
     
     [Test]
-    public void RegisterUser_WithPasswordInvalid_ShouldFail()
+    public async Task RegisterUser_WithPasswordInvalid_ShouldFail()
     {
+        var username = "pikachu22";
+        var registrationRequest = new RegistrationRequest
+        {
+            Email = "test@test.com",
+            Password = "password_lol123",
+            Username = username,
+        };
+        var failedResult = Result<User>
+            .Failure(new EntityNotFoundError<User>(nameof(User.Email), nameof(User.Email)));
+        var failedPasswordValidationResult = Result.Failure();
+        _mockUserRepository.Setup(repository =>
+            repository.GetByEmail(registrationRequest.Email)).ReturnsAsync(failedResult);
+        _mockUserRepository.Setup(repository =>
+            repository.GetByUsername(registrationRequest.Username)).ReturnsAsync(failedResult);
+        _mockPasswordValidator.Setup(v => v.Validate(registrationRequest.Password))
+            .Returns(failedPasswordValidationResult);
+        _sut = new UserService(_mockUserRepository.Object, 
+            _mockAuthenticationService.Object,
+            _mockPasswordValidator.Object);
+        
+        var registrationResult = await _sut.RegisterUser(registrationRequest);
+        
+        
+        Assert.Multiple(() =>
+        {
+            Assert.That(registrationResult.IsError, Is.True);
+            Assert.That(registrationResult.Error, Is.Not.Null);
+            Assert.That(registrationResult.Error.GetType(), 
+                Is.EqualTo(typeof(Error)));
+        });
     }
 }
