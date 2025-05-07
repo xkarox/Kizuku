@@ -66,7 +66,7 @@ public class UserRepository(
     {
         try
         {
-            var query = db.Users.Where(u => u.Equals(entity))
+            var query = db.Users.Where(u => u == entity)
                 .AsQueryable();
             var result = await query.FirstOrDefaultAsync();
             if (result is null)
