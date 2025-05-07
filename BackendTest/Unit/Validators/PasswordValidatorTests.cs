@@ -86,7 +86,7 @@ public class PasswordValidatorTests
     }
     
     [Test]
-    public async Task Validate_Validate_WithPasswordWithoutDigit_ShouldReturnFalse()
+    public async Task Validate_WithPasswordWithoutDigit_ShouldReturnFalse()
     {
         const string shortPassword = "Aaa@____";
         
