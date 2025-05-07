@@ -18,7 +18,7 @@ public class UserServiceTests
     private Mock<IUserRepository> _mockUserRepository;
     private Mock<IAuthenticationService> _mockAuthenticationService;
     private Mock<IPasswordValidator> _mockPasswordValidator;
-    private UserService _sut;
+    private UserService _sut = null!;
 
     [SetUp]
     public void Setup()
