@@ -25,7 +25,7 @@ public class PasswordValidatorTests
     /// - Contains at least one special character.
     /// </summary>
     [Test]
-    public async Task Validate_WithValidPassword_ShouldReturnTrue()
+    public void Validate_WithValidPassword_ShouldReturnTrue()
     {
         const string validPassword = "Aa0@____";
         
@@ -35,7 +35,7 @@ public class PasswordValidatorTests
     }
     
     [Test]
-    public async Task Validate_WithPasswordLengthSeven_ShouldReturnFalse()
+    public void Validate_WithPasswordLengthSeven_ShouldReturnFalse()
     {
         const string shortPassword = "Aa0@___";
         
@@ -52,7 +52,7 @@ public class PasswordValidatorTests
     }
     
     [Test]
-    public async Task Validate_WithPasswordWithoutUppercaseCharacter_ShouldReturnFalse()
+    public void Validate_WithPasswordWithoutUppercaseCharacter_ShouldReturnFalse()
     {
         const string shortPassword = "aa0@____";
         
@@ -69,7 +69,7 @@ public class PasswordValidatorTests
     }
     
     [Test]
-    public async Task Validate_WithPasswordWithoutLowecaseCharacter_ShouldReturnFalse()
+    public void Validate_WithPasswordWithoutLowercaseCharacter_ShouldReturnFalse()
     {
         const string shortPassword = "AA0@____";
         
@@ -86,7 +86,7 @@ public class PasswordValidatorTests
     }
     
     [Test]
-    public async Task Validate_WithPasswordWithoutDigit_ShouldReturnFalse()
+    public void Validate_WithPasswordWithoutDigit_ShouldReturnFalse()
     {
         const string shortPassword = "Aaa@____";
         
@@ -103,7 +103,7 @@ public class PasswordValidatorTests
     }
     
     [Test]
-    public async Task Validate_Validate_WithPasswordWithoutSpecialCharacter_ShouldReturnFalse()
+    public void Validate_WithPasswordWithoutSpecialCharacter_ShouldReturnFalse()
     {
         const string shortPassword = "Aa00aaaa";
         
