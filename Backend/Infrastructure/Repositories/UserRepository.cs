@@ -95,7 +95,7 @@ public class UserRepository(
         try
         {
             var opResult = await db.SaveChangesAsync();
-            if (opResult != 1)
+            if (opResult == 0)
                 return Result.Failure(new DatabaseError($"Failed to update user: {entity}"));
             return Result.Success();
         }
@@ -119,7 +119,7 @@ public class UserRepository(
         try
         {
             var opResult = await db.SaveChangesAsync();
-            if (opResult != 1)
+            if (opResult == 0)
                 return Result.Failure(new DatabaseError($"Failed to delete user: {entity}"));
             return Result.Success();
         }
