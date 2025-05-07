@@ -1,11 +1,19 @@
 using Core;
 using Core.Errors.Authentication;
+using Core.Validators;
 
 namespace Backend.Validators;
 
-public class PasswordValidator
+public class PasswordValidator : IPasswordValidator
 {
-    public static Result Validate(string password)
+    /// <summary>
+    /// Validates a password against minimum length, character case, digit, and special character requirements.
+    /// </summary>
+    /// <param name="password">The password string to validate.</param>
+    /// <returns>
+    /// A success <c>Result</c> if the password meets all criteria; otherwise, a failure <c>Result</c> containing details about which requirements were not met.
+    /// </returns>
+    public Result Validate(string password)
     {
         bool hasMinLength = password.Length >= 8;
         bool hasUpperCase = password.Any(char.IsUpper);

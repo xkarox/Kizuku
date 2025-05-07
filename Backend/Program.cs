@@ -1,8 +1,10 @@
 using Backend.Infrastructure;
+using Backend.Infrastructure.Repositories;
 using Backend.Json;
-using Backend.Repositories;
 using Backend.Services;
+using Backend.Validators;
 using Core;
+using Core.Validators;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
 
@@ -13,7 +15,7 @@ var connectionString = builder.Configuration
                        ?? throw new InvalidOperationException(
                            "Connection string 'Database' not found.");
 
-builder.Services.AddDbContext<KizukuContext>(options =>
+builder.Services.AddDbContext<IKizukuContext, KizukuContext>(options =>
     options.UseSqlite($"Data Source={connectionString}"));
 
 // Cookie Authentication
@@ -51,6 +53,7 @@ builder.Services.AddSwaggerGen(c =>
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 
 // Services for business logic
+builder.Services.AddScoped<IPasswordValidator, PasswordValidator>();
 builder.Services.AddScoped<IAuthenticationService, AuthenticationService>();
 builder.Services.AddScoped<IUserService, UserService>();
 

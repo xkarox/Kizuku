@@ -6,12 +6,17 @@ using Core.Errors.Database;
 using Core.Errors.Entities;
 using Microsoft.EntityFrameworkCore;
 
-namespace Backend.Repositories;
+namespace Backend.Infrastructure.Repositories;
 
 public class UserRepository(
-    KizukuContext db
+    IKizukuContext db
     ) : IUserRepository
 {
+    /// <summary>
+    /// Asynchronously adds a new User entity to the database.
+    /// </summary>
+    /// <param name="entity">The User entity to add.</param>
+    /// <returns>A Result containing the created User on success, or an error if the operation fails.</returns>
     public async Task<Result<User>> Create(User entity)
     {
         if (entity == null)
@@ -29,27 +34,35 @@ public class UserRepository(
         }
     }
 
+    /// <summary>
+    /// Asynchronously retrieves all User entities from the database.
+    /// </summary>
+    /// <returns>A Result containing the list of all User entities, or a failure with a DatabaseError if an error occurs.</returns>
     public async Task<Result<IEnumerable<User>>> GetAll()
     {
-        var query = db.Users.AsQueryable();
         try
         {
-            var result = await query.ToListAsync();
+            var result = await db.Users.ToListAsync();
             return Result<IEnumerable<User>>.Success(result);
         }
         catch (ArgumentNullException e)
         {
             return Result<IEnumerable<User>>.Failure(
-                new EntityNullError<KizukuContext>());
+                new DatabaseError(e.Message));
         }
     }
 
+    /// <summary>
+    /// Retrieves a user by their unique identifier.
+    /// </summary>
+    /// <param name="id">The unique identifier of the user.</param>
+    /// <returns>A result containing the user if found, or a failure with an error if not found or if a database error occurs.</returns>
     public async Task<Result<User>> GetById(Guid id)
     {
-        var query = db.Users.Where(u => u.UserId == id)
-            .AsQueryable();
         try
         {
+            var query = db.Users.Where(u => u.UserId == id)
+                .AsQueryable();
             var result = await query.FirstOrDefaultAsync();
             if (result is null)
                 return Result<User>.Failure(
@@ -59,16 +72,21 @@ public class UserRepository(
         }
         catch (ArgumentNullException e)
         {
-            return Result<User>.Failure(new EntityNullError<KizukuContext>());
+            return Result<User>.Failure(new DatabaseError(e.Message));
         }
     }
 
+    /// <summary>
+    /// Retrieves a user from the database that matches the provided entity.
+    /// </summary>
+    /// <param name="entity">The user entity to match against existing records.</param>
+    /// <returns>A result containing the found user if successful; otherwise, a failure with an appropriate error.</returns>
     public async Task<Result<User>> Get(User entity)
     {
-        var query = db.Users.Where(u => u.Equals(entity))
-            .AsQueryable();
         try
         {
+            var query = db.Users.Where(u => u == entity)
+                .AsQueryable();
             var result = await query.FirstOrDefaultAsync();
             if (result is null)
                 return Result<User>.Failure(new EntityNotFoundError<User>(entity));
@@ -76,16 +94,33 @@ public class UserRepository(
         }
         catch (ArgumentNullException e)
         {
-            return Result<User>.Failure(new EntityNullError<KizukuContext>());
+            return Result<User>.Failure(new DatabaseError(e.Message));
         }
     }
 
+    /// <summary>
+    /// Updates the username, email, and password of an existing User entity in the database.
+    /// </summary>
+    /// <param name="entity">The User entity containing updated values. The UserId is used to locate the existing record.</param>
+    /// <returns>A Result indicating success, or failure with an EntityNotFoundError if the user does not exist, or a DatabaseError if the update fails.</returns>
     public async Task<Result> Update(User entity)
     { 
-        db.Users.Update(entity);
+        var entityToUpdate = await db.Users.Where(e => e.UserId == entity.UserId).FirstOrDefaultAsync(); 
+
+        if (entityToUpdate == null)
+        {
+            return Result.Failure(new EntityNotFoundError<User>(entity)); 
+        }
+        
+        entityToUpdate!.Username = entity.Username;
+        entityToUpdate.Email = entity.Email;
+        entityToUpdate.Password = entity.Password;
+        
         try
         {
-            await db.SaveChangesAsync();
+            var opResult = await db.SaveChangesAsync();
+            if (opResult == 0)
+                return Result.Failure(new DatabaseError($"Failed to update user: {entity}"));
             return Result.Success();
         }
         catch (DbUpdateException e)
@@ -94,12 +129,27 @@ public class UserRepository(
         }
     }
 
+    /// <summary>
+    /// Deletes a user entity from the database if it exists.
+    /// </summary>
+    /// <param name="entity">The user entity to delete, identified by its UserId.</param>
+    /// <returns>A result indicating success, or failure with an error if the user is not found or the deletion fails.</returns>
     public async Task<Result> Delete(User entity)
     {
-        db.Users.Remove(entity);
+        var entityToDelete = await db.Users.Where(e => e.UserId == entity.UserId).FirstOrDefaultAsync(); 
+
+        if (entityToDelete == null)
+        {
+            return Result.Failure(new EntityNotFoundError<User>(entity)); 
+        }
+        
+        db.Users.Remove(entityToDelete);
+        
         try
         {
-            await db.SaveChangesAsync();
+            var opResult = await db.SaveChangesAsync();
+            if (opResult == 0)
+                return Result.Failure(new DatabaseError($"Failed to delete user: {entity}"));
             return Result.Success();
         }
         catch (DbUpdateException e)
@@ -108,12 +158,16 @@ public class UserRepository(
         }
     }
 
-    public async Task<Result<User>> GetUserByEmail(string email)
+    /// <summary>
+    /// Retrieves a user by email address.
+    /// </summary>
+    /// <param name="email">The email address to search for.</param>
+    /// <returns>A result containing the found user, or a failure with an error if not found or if a database error occurs.</returns>
+    public async Task<Result<User>> GetByEmail(string email)
     {
-        var query = db.Users.AsQueryable()
-            .Where(u => u.Email == email);
         try
         {
+            var query = db.Users.Where(u => u.Email == email);
             var result = await query.FirstOrDefaultAsync();
             if (result is null)
                 return Result<User>.Failure(
@@ -122,16 +176,21 @@ public class UserRepository(
         }
         catch (ArgumentNullException e)
         {
-            return Result<User>.Failure(new EntityNullError<KizukuContext>());
+            return Result<User>.Failure(new DatabaseError(e.Message));
         }
     }
     
-    public async Task<Result<User>> GetUserByUsername(string username)
+    /// <summary>
+    /// Retrieves a user by their username.
+    /// </summary>
+    /// <param name="username">The username to search for.</param>
+    /// <returns>A result containing the user if found, or a failure with an appropriate error if not found or if a database error occurs.</returns>
+    public async Task<Result<User>> GetByUsername(string username)
     {
-        var query = db.Users.AsQueryable()
-            .Where(u => u.Username == username);
         try
         {
+            var query = db.Users
+                .Where(u => u.Username == username);
             var result = await query.FirstOrDefaultAsync();
             if (result is null)
                 return Result<User>.Failure(
@@ -140,7 +199,7 @@ public class UserRepository(
         }
         catch (ArgumentNullException e)
         {
-            return Result<User>.Failure(new EntityNullError<KizukuContext>());
+            return Result<User>.Failure(new DatabaseError(e.Message));
         }
     }
 }

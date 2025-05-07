@@ -1,9 +1,7 @@
 using System.Security.Claims;
-using Backend.Repositories;
 using Core;
 using Core.Entities;
 using Core.Errors.Authentication;
-using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using BC = BCrypt.Net.BCrypt;
 using IAuthenticationService = Core.IAuthenticationService;
@@ -14,10 +12,16 @@ public class AuthenticationService(
     IUserRepository userRepository
     ): IAuthenticationService
 {
+    /// <summary>
+    /// Asynchronously validates a user's credentials by checking the provided email and password.
+    /// </summary>
+    /// <param name="email">The user's email address.</param>
+    /// <param name="password">The plaintext password to validate.</param>
+    /// <returns>A result containing the user if authentication succeeds; otherwise, a failure result with the relevant error.</returns>
     public async Task<Result<User>> ValidateCredentials(string email, 
         string password)
     {
-        var getUserByEmailResult = await userRepository.GetUserByEmail(email);
+        var getUserByEmailResult = await userRepository.GetByEmail(email);
         if (getUserByEmailResult.IsError)
             return Result<User>.Failure(getUserByEmailResult.Error);
 
