@@ -12,6 +12,12 @@ public class AuthenticationService(
     IUserRepository userRepository
     ): IAuthenticationService
 {
+    /// <summary>
+    /// Asynchronously validates a user's credentials by checking the provided email and password.
+    /// </summary>
+    /// <param name="email">The user's email address.</param>
+    /// <param name="password">The plaintext password to validate.</param>
+    /// <returns>A result containing the user if authentication succeeds; otherwise, a failure result with the relevant error.</returns>
     public async Task<Result<User>> ValidateCredentials(string email, 
         string password)
     {
