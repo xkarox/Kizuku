@@ -14,6 +14,11 @@ public class UserService(
     IPasswordValidator passwordValidator
     ) : IUserService
 {
+    /// <summary>
+    /// Registers a new user based on the provided registration request.
+    /// </summary>
+    /// <param name="request">The registration details for the new user.</param>
+    /// <returns>A result containing the created user on success, or an error if registration fails.</returns>
     public async Task<Result<User>> RegisterUser(RegistrationRequest request)
     {
         var registrationValidation = await ValidateRegistrationRequest(request);
@@ -32,6 +37,11 @@ public class UserService(
         return Result<User>.Success(registration.Value!);
     }
     
+    /// <summary>
+    /// Validates a user registration request by checking for existing email or username and ensuring the password meets validation criteria.
+    /// </summary>
+    /// <param name="request">The registration request to validate.</param>
+    /// <returns>A result indicating success if the request is valid, or failure with the corresponding error.</returns>
     private async Task<Result> ValidateRegistrationRequest(RegistrationRequest request)
     {
         var findUserWithEmailResult = await userRepository.GetByEmail(request.Email);

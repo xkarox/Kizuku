@@ -12,6 +12,11 @@ public class UserRepository(
     IKizukuContext db
     ) : IUserRepository
 {
+    /// <summary>
+    /// Asynchronously adds a new User entity to the database.
+    /// </summary>
+    /// <param name="entity">The User entity to add.</param>
+    /// <returns>A Result containing the created User on success, or an error if the operation fails.</returns>
     public async Task<Result<User>> Create(User entity)
     {
         if (entity == null)
@@ -29,6 +34,10 @@ public class UserRepository(
         }
     }
 
+    /// <summary>
+    /// Asynchronously retrieves all User entities from the database.
+    /// </summary>
+    /// <returns>A Result containing the list of all User entities, or a failure with a DatabaseError if an error occurs.</returns>
     public async Task<Result<IEnumerable<User>>> GetAll()
     {
         try
@@ -43,6 +52,11 @@ public class UserRepository(
         }
     }
 
+    /// <summary>
+    /// Retrieves a user by their unique identifier.
+    /// </summary>
+    /// <param name="id">The unique identifier of the user.</param>
+    /// <returns>A result containing the user if found, or a failure with an error if not found or if a database error occurs.</returns>
     public async Task<Result<User>> GetById(Guid id)
     {
         try
@@ -62,6 +76,11 @@ public class UserRepository(
         }
     }
 
+    /// <summary>
+    /// Retrieves a user from the database that matches the provided entity.
+    /// </summary>
+    /// <param name="entity">The user entity to match against existing records.</param>
+    /// <returns>A result containing the found user if successful; otherwise, a failure with an appropriate error.</returns>
     public async Task<Result<User>> Get(User entity)
     {
         try
@@ -79,6 +98,11 @@ public class UserRepository(
         }
     }
 
+    /// <summary>
+    /// Updates the username, email, and password of an existing User entity in the database.
+    /// </summary>
+    /// <param name="entity">The User entity containing updated values. The UserId is used to locate the existing record.</param>
+    /// <returns>A Result indicating success, or failure with an EntityNotFoundError if the user does not exist, or a DatabaseError if the update fails.</returns>
     public async Task<Result> Update(User entity)
     { 
         var entityToUpdate = await db.Users.Where(e => e.UserId == entity.UserId).FirstOrDefaultAsync(); 
@@ -105,6 +129,11 @@ public class UserRepository(
         }
     }
 
+    /// <summary>
+    /// Deletes a user entity from the database if it exists.
+    /// </summary>
+    /// <param name="entity">The user entity to delete, identified by its UserId.</param>
+    /// <returns>A result indicating success, or failure with an error if the user is not found or the deletion fails.</returns>
     public async Task<Result> Delete(User entity)
     {
         var entityToDelete = await db.Users.Where(e => e.UserId == entity.UserId).FirstOrDefaultAsync(); 
@@ -129,6 +158,11 @@ public class UserRepository(
         }
     }
 
+    /// <summary>
+    /// Retrieves a user by email address.
+    /// </summary>
+    /// <param name="email">The email address to search for.</param>
+    /// <returns>A result containing the found user, or a failure with an error if not found or if a database error occurs.</returns>
     public async Task<Result<User>> GetByEmail(string email)
     {
         try
@@ -146,6 +180,11 @@ public class UserRepository(
         }
     }
     
+    /// <summary>
+    /// Retrieves a user by their username.
+    /// </summary>
+    /// <param name="username">The username to search for.</param>
+    /// <returns>A result containing the user if found, or a failure with an appropriate error if not found or if a database error occurs.</returns>
     public async Task<Result<User>> GetByUsername(string username)
     {
         try
