@@ -193,7 +193,7 @@ public class UserServiceTests
     }
     
     [Test]
-    public async Task? RegisterUser_WithValidRegistrationRequest_ButCreationFails_ShouldFail()
+    public async Task RegisterUser_WithValidRegistrationRequest_ButCreationFails_ShouldFail()
     {
         var registrationRequest = new RegistrationRequest
         {
