@@ -1,7 +1,25 @@
 ﻿@page "/"
-
+@inject NavigationManager NavigationManager
 <PageTitle>Home</PageTitle>
 
-<h1>Hello, world!</h1>
+<div class="home-container">
+    <Grid Columns="1" Rows="2" ColGap="2rem" Class="home-grid">
+        <Text Content="Kizuku" SizeInRem="10" Weight="FontWeights.W900" GradientColors="#9E07EF, #9F78F0" ShowGradient />
+        <div style="display: flex; align-items: center; justify-content: center">
+            <Button Text="Login" Type="ButtonType.Primary" @onclick="NavigateToLoginRegister" >
+                <Text Content="Login" SizeInRem="2" Weight="FontWeights.W100" Color="White"/>
+            </Button>
+        </div>
+    </Grid>
+</div>
 
 Welcome to your new app.
+
+@code {
+
+    private void NavigateToLoginRegister()
+    {
+        NavigationManager.NavigateTo("/Authentication");
+    }
+
+}

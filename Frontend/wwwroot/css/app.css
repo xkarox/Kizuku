@@ -1,3 +1,17 @@
+
+
+.home-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+}
+
+/*.home-grid {*/
+/*    display: flex;*/
+/*    align-items: center;*/
+/*}*/
+
 .valid.modified:not([type=checkbox]) {
     outline: 1px solid #26b050;
 }

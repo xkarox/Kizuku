@@ -1,3 +1,20 @@
 ﻿@inherits LayoutComponentBase
+@inject Initialization init
 
-@Body
+<div @onclick="init.HandleMainLayoutClickEvent">
+    @Body
+</div>
+
+@code
+{
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        // This initializes the theme for the components.
+        // Then you can use init.ToggleTheme() to toggle between light and dark modes.    
+        if (firstRender)
+        {
+            await init.InitializeTheme();
+            await init.ToggleTheme();
+        }; 
+    }
+}
