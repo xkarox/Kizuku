@@ -1,21 +1,49 @@
 ﻿@page "/"
+
 @inject NavigationManager NavigationManager
+@inject Initialization init
+
 <PageTitle>Home</PageTitle>
 
 <div class="home-container">
     <Grid Columns="1" Rows="2" ColGap="2rem" Class="home-grid">
-        <Text Content="Kizuku" SizeInRem="10" Weight="FontWeights.W900" GradientColors="#9E07EF, #9F78F0" ShowGradient />
+        <Text Content="Kizuku" SizeInRem="10" Weight="FontWeights.W900" 
+              GradientColors="@Colors.PrimarySecondary" ShowGradient/>
+        <Separator Style="margin-bottom: 1rem"/>
         <div style="display: flex; align-items: center; justify-content: center">
-            <Button Text="Login" Type="ButtonType.Primary" @onclick="NavigateToLoginRegister" >
-                <Text Content="Login" SizeInRem="2" Weight="FontWeights.W100" Color="White"/>
+            <Button Text="Login" Type="ButtonType.Outline" @onclick="NavigateToLoginRegister" Size="ButtonSize.Large">
+                <Text Content="Login" Weight="FontWeights.W100"/>
             </Button>
+            <Separator Vertical Style="margin-left: 2rem; margin-right: 2rem"/>
+            <Button Icon="@_themeIcon" OnClick="ToggleTheme" Type="ButtonType.Outline" Size="ButtonSize.Large"></Button>
         </div>
     </Grid>
 </div>
 
-Welcome to your new app.
 
 @code {
+    private string _textColor = string.Empty;
+    private string _themeIcon = string.Empty;
+
+    public override Task SetParametersAsync(ParameterView parameters)
+    {
+        this.UpdateThemeColorAndIcon();
+        return base.SetParametersAsync(parameters);
+    }
+
+    private void UpdateThemeColorAndIcon()
+    {
+        var currentTheme = init.CurrentTheme;
+        _textColor = currentTheme == "light" ? "black" : "white";
+        _themeIcon = currentTheme == "light" ? "light_mode" : "dark_mode"; 
+        StateHasChanged();
+    }
+
+    private void ToggleTheme()
+    {
+        init.ToggleTheme();
+        this.UpdateThemeColorAndIcon();
+    }
 
     private void NavigateToLoginRegister()
     {

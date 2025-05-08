@@ -1,25 +1,18 @@
 @page "/Authentication"
+@inject NavigationManager NavigationManager
+
 <div class="authentication-container">
-    <Animate Type="AnimationType.SlideFade" Duration="0.5s" FromY="50px" ToY="0" Ease="EasingType.Ease_Out" Iteration="1" >
-        <Card>
-            <CardHeader>
-                <Text Content="Login" SizeInRem="2" Weight="FontWeights.W900" GradientColors="#9E07EF, #9F78F0" ShowGradient/>
-            </CardHeader>
-            <CardContent>
-                <Grid Columns="1" Rows="3">
-                    <Group Label="Email">
-                        <Input TItem="string"></Input>
-                    </Group>
-                    <Group Label="Password">
-                        <Input TItem="string"></Input>
-                    </Group>
-                </Grid>
-            </CardContent>
-        </Card>
+    <Animate Type="AnimationType.SlideFade" Duration="0.5s" 
+             FromY="50px" ToY="0" Ease="EasingType.Ease_Out" Iteration="1" >
+        <Auth OnBackButtonClicked="NavigateToIndex"/> 
     </Animate>
     
 </div>
 
 @code {
-    
+
+    private void NavigateToIndex()
+    {
+        NavigationManager.NavigateTo("/");
+    }
 }
