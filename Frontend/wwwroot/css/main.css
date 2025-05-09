@@ -1,0 +1,31 @@
+.center-hv {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100%;
+}
+
+.center-h {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+
+.flex-row {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+}
+
+.flex-col {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+}
+
+.kizuku-button {
+    background: linear-gradient(to bottom, #8937DB, #BC34D9);
+    margin: 0.5rem;
+    color: white !important;
+}

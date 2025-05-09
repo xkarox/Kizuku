@@ -1,0 +1,61 @@
+@page "/user-info"
+@using System.Globalization
+@using Microsoft.AspNetCore.Components.Authorization
+@inject NavigationManager NavigationManager
+
+@inject AuthenticationStateProvider AuthenticationStateProvider
+
+<div class="center-hv">
+    <Card Style="max-width: fit-content;">
+        <CardHeader>
+            <Text Content="User Information" SizeInRem="3" Weight="FontWeights.W900" GradientColors="@Colors.PrimarySecondary" ShowGradient/>
+        </CardHeader>
+
+        <CardContent>
+            <div class="flex-col" style="width: 30rem">
+                @if (user?.Identity?.IsAuthenticated == true)
+                {
+                    <div class="flex-col">
+                        <Text>Hello, @user.Identity.Name!</Text>
+                        <Text>You are authenticated ✅</Text>
+                    </div>
+                    
+                    <Separator />
+                    
+                    <Text>Your current claims:</Text>
+                    <ul>
+                        @foreach (var claim in user.Claims)
+                        {
+                            <li>@claim.Type[(claim.Type.LastIndexOf("/", StringComparison.Ordinal) + 1)..] : @claim.Value</li>
+                        }
+                    </ul>
+                }
+                else
+                {
+                    <Text>You are not authenticated ❌</Text>
+                }
+            </div>
+        </CardContent>
+        <CardFooter>
+            <Button Type="ButtonType.Outline" Icon="arrow_back" Style="margin: 1rem"
+                    OnClick="BackButtonClicked"></Button>
+            <Text Content="@DateTime.Now.ToString(CultureInfo.CurrentCulture)" SizeInRem="1"
+                  GradientColors="@Colors.PrimarySecondary" ShowGradient Style="margin: 1rem"/>
+        </CardFooter>
+    </Card>
+</div>
+
+@code {
+    private System.Security.Claims.ClaimsPrincipal user;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        user = authState.User;
+    }
+    
+    private void BackButtonClicked()
+    {
+        NavigationManager.NavigateTo("/");
+    }
+}

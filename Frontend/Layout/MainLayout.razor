@@ -1,12 +1,62 @@
-﻿@inherits LayoutComponentBase
+﻿@using Frontend.Services.Interfaces
+@using Microsoft.AspNetCore.Components.Authorization
+@inherits LayoutComponentBase
 @inject Initialization init
+@inject IAuthenticationService AuthService
+@inject NavigationManager NavigationManager
 
 <div @onclick="init.HandleMainLayoutClickEvent">
-    @Body
+    <NavigationMenu>
+        <div class="flex-row" style="justify-content: space-between; height:  5vh">
+            <div @onclick="NavigateToIndex" class="center-h" style="cursor: pointer;margin: 0.5rem 0.5rem 0.5rem 1rem;">
+                <Text Content="Kizuku" GradientColors="@Colors.PrimarySecondary" ShowGradient
+                      Weight="FontWeights.W600" ></Text>
+            </div>
+            <AuthorizeView>
+                <NotAuthorized>
+                    <div class="flex-row">
+                        @if (!IsAuthenticationPage())
+                        {
+                            <Button OnClick="NavigateToAuthentication"
+                                    Style="border-top: none"
+                                    Class="kizuku-button">
+                                <span>
+                                    Sign In
+                                </span>
+                            </Button>
+                        }
+
+                        <Button Type="ButtonType.Icon" Icon="@_themeIcon" OnClick="ToggleTheme"
+                                Style="margin: 0.5rem"></Button>
+                    </div>
+                </NotAuthorized>
+                <Authorized>
+                    <div class="flex-row">
+                        <NavMenuItem Id="menu-2" Title="User Info" Url="/user-info"/>
+                        <Button OnClick="HandleLogout"
+                                Style="border: none"
+                                Class="kizuku-button">
+                            <span>
+                                Sign Out
+                            </span>
+                        </Button>
+                        <Button Type="ButtonType.Icon" Icon="@_themeIcon" OnClick="ToggleTheme"
+                                Style="margin: 0.5rem"></Button>
+                    </div>
+                </Authorized>
+            </AuthorizeView>
+        </div>
+    </NavigationMenu>
+    <div style="height: 95vh">
+        @Body
+    </div>
 </div>
 
 @code
 {
+    private string _textColor = string.Empty;
+    private string _themeIcon = string.Empty;
+    
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         // This initializes the theme for the components.
@@ -14,6 +64,44 @@
         if (firstRender)
         {
             await init.InitializeTheme();
+            this.UpdateThemeColorAndIcon();
         }; 
+    }
+    
+    private async Task HandleLogout()
+    {
+        await AuthService.Logout();
+        NavigationManager.NavigateTo("/");
+    }
+
+    private async Task NavigateToAuthentication()
+    {
+        NavigationManager.NavigateTo("/authentication");
+    }
+    
+    private async Task NavigateToIndex()
+    {
+        NavigationManager.NavigateTo("/");
+    }
+    
+    private void ToggleTheme()
+    {
+        init.ToggleTheme();
+        this.UpdateThemeColorAndIcon();
+    }
+    
+    private void UpdateThemeColorAndIcon()
+    {
+        var currentTheme = init.CurrentTheme;
+        _textColor = currentTheme == "light" ? "black" : "white";
+        _themeIcon = currentTheme == "light" ? "light_mode" : "dark_mode"; 
+        StateHasChanged();
+    }
+
+    private bool IsAuthenticationPage()
+    {
+        var path = NavigationManager.Uri[NavigationManager.Uri.LastIndexOf("/", StringComparison.Ordinal)..];
+        Console.WriteLine(path);
+        return path == "/authentication";
     }
 }
