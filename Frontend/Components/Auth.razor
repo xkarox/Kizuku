@@ -1,13 +1,16 @@
-@* Style="min-width: 80rem; max-width: 80rem;" *@
+@using Core.Requests
+@using Frontend.Services.Interfaces
+@inject IAuthenticationService AuthService 
+@inject NavigationManager NavigationManager
 <Card>
     <CardHeader>
-        <div style="display: flex; flex-direction: row; gap: 1rem; align-items: center; justify-content: center;">
+        <div class="flex-row" style="justify-content: space-between;">
             <div @onclick="() => SetLoginState(true)" style="cursor: pointer">
                 <Text Content="Sign in" SizeInRem="2" Weight="FontWeights.W900"
                       GradientColors="@(_loginState ? Colors.PrimarySecondary : Colors.TextDisabled)" ShowGradient/>
             </div>
             <div>
-                <Text Content="/" SizeInRem="1" Weight="FontWeights.W900"
+                <Text Content="/" SizeInRem="2" Weight="FontWeights.W900"
                       GradientColors="@Colors.PrimarySecondary" ShowGradient/>
             </div>
             <div @onclick="() => SetLoginState(false)" style="cursor: pointer">
@@ -18,56 +21,60 @@
     </CardHeader>
     
     <CardContent>
-        @if (_loginState)
-        {
-            <Animate Type="AnimationType.Fade" FromOpacity="0" ToOpacity="100" Iteration="1"  Duration="0.3s">
-                <div style="display: flex; flex-direction: column; gap: 1rem;">
-                    <Input Label="Email" Placeholder="Your Email" TItem="string"
-                           @bind-Value="_email" Style="width: 15rem"/>
-                    <Input Label="Password" Placeholder="Your Password" TItem="string" 
-                           @bind-Value="_password" Type="password" Style="width: 15rem" Error="true"/>
-                </div>
-            </Animate>
-        }
-        // registration state
-        else
-        {
-            <Animate Type="AnimationType.Fade" FromOpacity="0" ToOpacity="100" Iteration="1" Duration="0.3s">
-                <div style="display: flex; flex-direction: column; gap: 1rem;">
-                    <Input Label="Username" Placeholder="Your desired username" 
-                           @bind-Value="_username" TItem="string" Style="width: 15rem"/>
-                    <Input Label="Email" Placeholder="Your Email"
-                           @bind-Value="_email" TItem="string" Style="width: 15rem"/>
-                    <Input Label="Password" Placeholder="Your Password"
-                           @bind-Value="_password" TItem="string" Type="password" Style="width: 15rem"/>
-                    <Input Label="Repeat Password" Placeholder="Repeat Your Password"
-                           @bind-Value="_passwordRepeated" TItem="string" Type="password" Style="width: 15rem"/>
-                </div>
-            </Animate>
-        }
+            @if (_loginState)
+            {
+                <Animate Type="AnimationType.Fade" FromOpacity="0" ToOpacity="100" Iteration="1"  Duration="0.3s">
+                    <div class="flex-col">
+                        <Input Label="Email" Placeholder="Your Email" TItem="string"
+                               @bind-Value="_email" Style="width: 15rem"/>
+                        <Input Label="Password" Placeholder="Your Password" TItem="string"
+                               @bind-Value="_password" Type="password" Style="width: 15rem" Error="@_errorMessage"/>
+                        <Text Color="red" Content="@_errorMessage" Style="max-width: 15rem"/>
+                    </div>
+                </Animate>
+            }
+            else // registration state
+            {
+                <Animate Type="AnimationType.Fade" FromOpacity="0" ToOpacity="100" Iteration="1" Duration="0.3s">
+                    <div class="flex-col">
+                        <Input Label="Username" Placeholder="Your desired username"
+                               @bind-Value="_username" TItem="string" Style="width: 15rem"/>
+                        <Input Label="Email" Placeholder="Your Email"
+                               @bind-Value="_email" TItem="string" Style="width: 15rem"/>
+                        <Input Label="Password" Placeholder="Your Password"
+                               @bind-Value="_password" TItem="string" Type="password" Style="width: 15rem"/>
+                        <Input Label="Repeat Password" Placeholder="Repeat Your Password"
+                               @bind-Value="_passwordRepeated" TItem="string" Type="password" Style="width: 15rem" Error="@_passwordRegistrationError"/>
+                        <Text Color="red" Content="@_passwordRegistrationError" Style="max-width: 15rem"/>
+                        <Text Color="red" Content="@_errorMessage" Style="max-width: 15rem"/>
+                    </div>
+                </Animate>
+            }
     </CardContent>
     
     <CardFooter>
         <Button Type="ButtonType.Outline" Icon="arrow_back" Style="margin: 1rem"
-            OnClick="BackButtonClicked"></Button>
+                OnClick="BackButtonClicked"></Button>
         @if (_loginState)
         {
-            <Button Type="ButtonType.Outline" Style="margin: 1rem; 
-            background-color: #8937DB; color: white;"
-                    OnClick="LoginButtonClicked">Sign In</Button>
+            <Button Type="ButtonType.Outline" Style="margin: 1rem;"
+                    Class="kizuku-button"
+                    OnClick="HandleLogin" disabled="@_isProcessing">
+                @if (_isProcessing) { <span>Processing...</span> } else { <span>Sign In</span> }
+            </Button>
         }
         else
         {
-            <Button Type="ButtonType.Outline" Style="margin: 1rem; 
-            background-color: #8937DB; color: white;"
-                    OnClick="RegistrationButtonClicked">Sign Up</Button>
+            <Button Type="ButtonType.Outline" Style="margin: 1rem;"
+                    Class="kizuku-button"
+                    OnClick="HandleRegistration" disabled="@_isProcessing">
+                @if (_isProcessing) { <span>Processing...</span> } else { <span>Sign Up</span> }
+            </Button>
         }
     </CardFooter>
 </Card>
 
 @code {
-    [Parameter] public Action<string, string>? OnLoginButtonClicked { get; set; }
-    [Parameter] public Action<string, string, string>? OnRegistrationButtonClicked { get; set; }
     [Parameter] public Func<string, bool>? PasswordValidator { get; set; }
     [Parameter] public Action? OnBackButtonClicked { get; set; }
 
@@ -76,44 +83,77 @@
     private string _passwordRepeated = string.Empty;
     private string _username = string.Empty;
 
+    private string _errorMessage = string.Empty;
     private string _passwordRegistrationError = string.Empty;
-
+    
+    private bool _isProcessing = false;
     private bool _loginState = true;
 
     private void SetLoginState(bool isLogin)
     {
         _loginState = isLogin;
+        _loginState = isLogin;
+        _errorMessage = string.Empty;
+        _passwordRegistrationError = string.Empty;
     }
-
-    private void LoginButtonClicked()
+    
+    private async Task HandleLogin()
     {
-        OnLoginButtonClicked?.Invoke(_email, _password);
-    }
+        _isProcessing = true;
+        _errorMessage = string.Empty;
+        var loginRequest = new LoginRequest { Email = _email, Password = _password };
+        var loginResponse = await AuthService.Login(loginRequest);
 
-    private void RegistrationButtonClicked()
-    {
-        if (!PasswordsMatch())
+        if (loginResponse != null)
         {
-            _passwordRegistrationError = "Passwords do not match";
+            NavigationManager.NavigateTo("/");
         }
         else
         {
-            _passwordRegistrationError = string.Empty;
+            _errorMessage = "Login failed. Please check your credentials.";
         }
-        StateHasChanged();
-        if (PasswordValidator != null)
+        _isProcessing = false;
+    }
+
+    private async Task HandleRegistration()
+    {
+        _isProcessing = true;
+        _errorMessage = string.Empty;
+        _passwordRegistrationError = string.Empty;
+
+        if (!PasswordsMatch())
         {
-            if (!PasswordValidator(_password))
-            {
-                return;
-            }
+            _passwordRegistrationError = "Passwords do not match.";
+            _isProcessing = false;
+            return;
+        }
+        
+        if (PasswordValidator != null && !PasswordValidator(_password))
+        {
+            _passwordRegistrationError = "Password does not meet requirements.";
+             _isProcessing = false;
+            return;
         }
 
-        OnRegistrationButtonClicked?.Invoke(_username, _email, _password);
+        var registrationRequest = new RegistrationRequest { Username = _username, Email = _email, Password = _password };
+        var registrationResponse = await AuthService.Register(registrationRequest);
+
+        if (registrationResponse != null)
+        {
+            SetLoginState(true); 
+            _email = registrationRequest.Email; 
+            _password = string.Empty;
+        }
+        else
+        {
+            _errorMessage = "Registration failed. Please try again.";
+        }
+        _isProcessing = false;
     }
     
     private void BackButtonClicked()
     {
+        NavigationManager.NavigateTo("/");
         OnBackButtonClicked?.Invoke();
     }
 
