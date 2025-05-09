@@ -8,6 +8,7 @@ using Core.Requests;
 using Core.Responses;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using BC = BCrypt.Net.BCrypt;
 using IAuthenticationService = Core.IAuthenticationService;
@@ -69,5 +70,26 @@ public class AuthController(
     {
         await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
         return Ok();
+    }
+    
+    [Authorize] // Important: This endpoint should only be accessible to authenticated users
+    [HttpGet("currentUserInfo")]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(UserInfoResponse))]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    public IActionResult GetCurrentUserInfo()
+    {
+        if (User.Identity is null || !User.Identity.IsAuthenticated)
+        {
+            return Unauthorized();
+        }
+
+        var userInfo = new UserInfoResponse
+        {
+            IsAuthenticated = true,
+            Username = User.Identity.Name,
+            Email = User.Identities.FirstOrDefault()?.Claims.FirstOrDefault(c => c.Type == "email")?.Value,
+            Claims = User.Claims.Select(c => new ClaimResponse() { Type = c.Type, Value = c.Value }).ToList()
+        };
+        return Ok(userInfo);
     }
 }
