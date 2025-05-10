@@ -24,7 +24,8 @@ builder.Services
     .AddCookie(options =>
     {
         options.Cookie.HttpOnly = true;
-        options.Cookie.SameSite = SameSiteMode.None;
+        options.Cookie.SameSite = SameSiteMode.Lax;
+        options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
         options.ExpireTimeSpan = TimeSpan.FromHours(30);
         options.SlidingExpiration = true;
     });
@@ -64,7 +65,7 @@ builder.Services.AddCors(options =>
     options.AddPolicy(name: myAllowSpecificOrigins,
         policy =>
         {
-            policy.WithOrigins("https://localhost:7148") // Specify the allowed origin
+            policy.WithOrigins(builder.Configuration.GetValue<string>("AllowedOrigin")!)
                 .AllowAnyHeader()
                 .AllowAnyMethod()
                 .AllowCredentials();

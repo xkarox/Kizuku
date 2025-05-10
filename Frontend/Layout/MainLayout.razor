@@ -100,8 +100,7 @@
 
     private bool IsAuthenticationPage()
     {
-        var path = NavigationManager.Uri[NavigationManager.Uri.LastIndexOf("/", StringComparison.Ordinal)..];
-        Console.WriteLine(path);
-        return path == "/authentication";
+        var uri = new Uri(NavigationManager.Uri);
+        return uri.AbsolutePath.Equals("/authentication", StringComparison.OrdinalIgnoreCase);
     }
 }

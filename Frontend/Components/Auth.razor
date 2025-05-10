@@ -1,3 +1,4 @@
+@using System.Net.Mail
 @using Core.Requests
 @using Frontend.Services.Interfaces
 @inject IAuthenticationService AuthService 
@@ -92,7 +93,6 @@
     private void SetLoginState(bool isLogin)
     {
         _loginState = isLogin;
-        _loginState = isLogin;
         _errorMessage = string.Empty;
         _passwordRegistrationError = string.Empty;
     }
@@ -101,10 +101,25 @@
     {
         _isProcessing = true;
         _errorMessage = string.Empty;
+        
+        if (!IsValidEmail(_email))
+        {
+            _errorMessage = "Please enter a valid email address.";
+            _isProcessing = false;
+            return;
+        }
+
+        if (string.IsNullOrEmpty(_password))
+        {
+            _errorMessage = "Please enter a password.";
+            _isProcessing = false;
+            return;
+        }
+        
         var loginRequest = new LoginRequest { Email = _email, Password = _password };
         var loginResponse = await AuthService.Login(loginRequest);
-
-        if (loginResponse != null)
+        
+        if (loginResponse.IsSuccess)
         {
             NavigationManager.NavigateTo("/");
         }
@@ -120,7 +135,14 @@
         _isProcessing = true;
         _errorMessage = string.Empty;
         _passwordRegistrationError = string.Empty;
-
+        
+        if (!IsValidEmail(_email))
+        {
+            _errorMessage = "Please enter a valid email address.";
+            _isProcessing = false;
+            return;
+        }
+        
         if (!PasswordsMatch())
         {
             _passwordRegistrationError = "Passwords do not match.";
@@ -138,7 +160,7 @@
         var registrationRequest = new RegistrationRequest { Username = _username, Email = _email, Password = _password };
         var registrationResponse = await AuthService.Register(registrationRequest);
 
-        if (registrationResponse != null)
+        if (registrationResponse.IsSuccess)
         {
             SetLoginState(true); 
             _email = registrationRequest.Email; 
@@ -162,5 +184,20 @@
         if (string.IsNullOrWhiteSpace(_password) || string.IsNullOrWhiteSpace(_passwordRepeated))
             return false;
         return _password.Equals(_passwordRepeated);
+    }
+
+    private bool IsValidEmail(string email)
+    {
+        if (string.IsNullOrWhiteSpace(email))
+            return false;
+        try
+        {
+            var addr = new MailAddress(email);
+            return true;
+        }
+        catch
+        {
+            return false;
+        }
     }
 }

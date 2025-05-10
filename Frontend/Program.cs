@@ -16,16 +16,19 @@ builder.Services.AddCascadingAuthenticationState();
 
 builder.Services.AddSysinfocus(jsCssFromCDN: false);
 builder.Services.AddScoped<CookieDelegatingHandler>();
-builder.Services.AddScoped<AuthenticationStateProvider, CustomCookieAuthenticationStateProvider>();
+builder.Services.AddScoped<AuthenticationStateProvider, CookieAuthenticationStateProvider>();
 builder.Services.AddScoped<IAuthenticationService, AuthenticationService>();
 
+var baseUrl = builder.Configuration.GetValue<string>("ApiBaseUrl");
+if (string.IsNullOrEmpty(baseUrl))
+    throw new ApplicationException("Missing API BaseUrl");
 builder.Services.AddHttpClient("API", client =>
 {
-    client.BaseAddress = new Uri("https://localhost:7003");
+    client.BaseAddress = new Uri(baseUrl);
 })
 .AddHttpMessageHandler<CookieDelegatingHandler>();
 
-
+builder.Logging.AddConfiguration(builder.Configuration.GetSection("Logging"));
     
 
 await builder.Build().RunAsync();

@@ -3,18 +3,30 @@ using System.Security.Claims;
 using Core.Responses;
 using Microsoft.AspNetCore.Components.Authorization;
 
-public class CustomCookieAuthenticationStateProvider(
-    IHttpClientFactory httpClientFactory) : AuthenticationStateProvider
+namespace Frontend.Cookie;
+
+public class CookieAuthenticationStateProvider(
+    IHttpClientFactory httpClientFactory,
+    ILogger<CookieAuthenticationStateProvider> logger) : AuthenticationStateProvider
 {
     private readonly HttpClient _httpClient = httpClientFactory.CreateClient("API");
-    private ClaimsPrincipal _anonymous = new ClaimsPrincipal(new ClaimsIdentity());
+    private readonly ClaimsPrincipal _anonymous = new (new ClaimsIdentity());
 
     public override async Task<AuthenticationState> GetAuthenticationStateAsync()
     {
         try
         {
-            var userInfo = await _httpClient.GetFromJsonAsync<UserInfoResponse>("api/Auth/currentUserInfo");
-
+            var response = await _httpClient.GetAsync("api/Auth/currentUserInfo");
+            if (!response.IsSuccessStatusCode)
+            {
+                logger.Log(LogLevel.Debug, $"Auth endpoint returned {(int)response.StatusCode}");
+                return new AuthenticationState(_anonymous);
+            }
+            logger.Log(LogLevel.Debug, $"Auth endpoint returned {(int)response.StatusCode}");
+            
+            var userInfo = await response.Content.ReadFromJsonAsync<UserInfoResponse>();
+            logger.Log(LogLevel.Debug, $"UserInfo: {userInfo}");
+            
             if (userInfo != null && userInfo.IsAuthenticated)
             {
                 var claims = userInfo.Claims.Select(c => new Claim(c.Type, c.Value)).ToList();
@@ -24,11 +36,11 @@ public class CustomCookieAuthenticationStateProvider(
         }
         catch (HttpRequestException ex) when (ex.StatusCode == System.Net.HttpStatusCode.Unauthorized)
         {
-            Console.WriteLine("User is not authenticated or session expired");
+            logger.Log(LogLevel.Debug, "User is not authenticated or session expired");
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"Error fetching authentication state: {ex.Message}");
+            logger.Log(LogLevel.Debug, $"Unexpected error occured: {ex.Message}");
         }
 
         return new AuthenticationState(_anonymous);

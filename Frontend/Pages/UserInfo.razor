@@ -13,18 +13,18 @@
 
         <CardContent>
             <div class="flex-col" style="width: 30rem">
-                @if (user?.Identity?.IsAuthenticated == true)
+                @if (_user?.Identity?.IsAuthenticated == true)
                 {
                     <div class="flex-col">
-                        <Text>Hello, @user.Identity.Name!</Text>
+                        <Text>Hello, @_user.Identity.Name!</Text>
                         <Text>You are authenticated ✅</Text>
                     </div>
                     
                     <Separator />
-                    
+                     
                     <Text>Your current claims:</Text>
                     <ul>
-                        @foreach (var claim in user.Claims)
+                        @foreach (var claim in _user.Claims)
                         {
                             <li>@claim.Type[(claim.Type.LastIndexOf("/", StringComparison.Ordinal) + 1)..] : @claim.Value</li>
                         }
@@ -46,12 +46,12 @@
 </div>
 
 @code {
-    private System.Security.Claims.ClaimsPrincipal user;
+    private System.Security.Claims.ClaimsPrincipal? _user;
 
     protected override async Task OnInitializedAsync()
     {
         var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
-        user = authState.User;
+        _user = authState.User;
     }
     
     private void BackButtonClicked()

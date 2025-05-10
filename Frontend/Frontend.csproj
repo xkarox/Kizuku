@@ -13,6 +13,8 @@
         <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="9.0.3"/>
         <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="9.0.3" PrivateAssets="all"/>
         <PackageReference Include="Microsoft.Extensions.Http" Version="9.0.4" />
+        <PackageReference Include="Microsoft.Extensions.Logging" Version="9.0.4" />
+        <PackageReference Include="Microsoft.Extensions.Logging.Configuration" Version="9.0.4" />
         <PackageReference Include="Sysinfocus.AspNetCore.Components" Version="0.0.3" />
     </ItemGroup>
 
@@ -22,6 +24,19 @@
 
     <ItemGroup>
       <ProjectReference Include="..\Core\Core.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Content Update="wwwroot\appsettings.json">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </Content>
+      <Content Update="wwwroot\appsettings.Development.json">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </Content>
+    </ItemGroup>
+
+    <ItemGroup>
+      <Reference Include="Microsoft.Extensions.Logging.Configuration" />
     </ItemGroup>
 
 </Project>

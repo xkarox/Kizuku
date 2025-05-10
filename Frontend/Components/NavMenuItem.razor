@@ -1,7 +1,7 @@
 @if (ChildContent != null)
 {
     <div style="display: flex; align-items: center">
-        <NavigationMenuItem Id="@(Id ?? Id)" Title="@(Title ?? Title)" Url="@(Url ?? Url)">
+        <NavigationMenuItem Id="@Id" Title="@Title" Url="@Url">
             @ChildContent
         </NavigationMenuItem>
     </div>
@@ -13,9 +13,9 @@ else
     </div>
 }
 @code {
+    
     [CascadingParameter]
-    private 
-    NavigationMenu Parent { get; set; }
+    private NavigationMenu? Parent { get; set; }
 
     [Parameter]
     public string? Id { get; set; }
