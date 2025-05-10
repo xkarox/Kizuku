@@ -16,4 +16,6 @@ public Task<Result<User>> GetByEmail(string email);
 /// <param name="username">The username to search for.</param>
 /// <returns>A task that resolves to a result containing the user if found, or an error if not.</returns>
 public Task<Result<User>> GetByUsername(string username);
+public Task<Result<IEnumerable<User>>> GetAll();
+public Task<Result<User>> GetById(Guid id);
 }
