@@ -15,5 +15,7 @@ public class User : IEntity
     public required string Password { get; set; }
     [EmailAddress]
     public required string Email { get; set; }
-    public DateTimeOffset RegisteredAt { get; set; }
+    public DateTime RegisteredAt { get; set; }
+    
+    public virtual ICollection<Module> Modules { get; set; } = new List<Module>();
 }
