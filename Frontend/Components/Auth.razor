@@ -136,6 +136,13 @@
         _errorMessage = string.Empty;
         _passwordRegistrationError = string.Empty;
         
+        if (IsUsernameValid(_username))
+        {
+            _errorMessage = "Username must be at least 3 characters long.";
+            _isProcessing = false;
+            return;
+        }
+        
         if (!IsValidEmail(_email))
         {
             _errorMessage = "Please enter a valid email address.";
@@ -150,7 +157,7 @@
             return;
         }
         
-        if (PasswordValidator != null && !PasswordValidator(_password))
+        if (PasswordValidator?.Invoke(_password) ?? false)
         {
             _passwordRegistrationError = "Password does not meet requirements.";
              _isProcessing = false;
@@ -199,5 +206,10 @@
         {
             return false;
         }
+    }
+
+    private bool IsUsernameValid(string username)
+    {
+        return !(string.IsNullOrWhiteSpace(_username) || _username.Length < 3);
     }
 }
