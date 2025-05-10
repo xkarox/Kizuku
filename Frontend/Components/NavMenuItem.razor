@@ -1,0 +1,31 @@
+@if (ChildContent != null)
+{
+    <div style="display: flex; align-items: center">
+        <NavigationMenuItem Id="@Id" Title="@Title" Url="@Url">
+            @ChildContent
+        </NavigationMenuItem>
+    </div>
+}
+else
+{
+    <div style="display: flex; align-items: center">
+        <NavigationMenuItem Id="@(Id ?? Id)" Title="@(Title ?? Title)" Url="@(Url ?? Url)" />
+    </div>
+}
+@code {
+    
+    [CascadingParameter]
+    private NavigationMenu? Parent { get; set; }
+
+    [Parameter]
+    public string? Id { get; set; }
+
+    [Parameter]
+    public string? Title { get; set; }
+
+    [Parameter]
+    public string? Url { get; set; }
+
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
+}

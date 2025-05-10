@@ -1,0 +1,16 @@
+.sbc-navigation-menu {
+    display: block !important;
+    position: sticky !important;
+    top: 0 !important;
+    left: 0 !important;
+    z-index: 1000 !important;
+    height: 5% !important;
+}
+
+.dark{
+    background: #000 !important;
+}
+
+.dark .sbc-navigation-menu {
+    background: #000 !important;
+}
