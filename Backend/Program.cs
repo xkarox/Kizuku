@@ -49,6 +49,7 @@ builder.Services.AddSwaggerGen(c =>
 
 // Repositories for data access
 builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IModuleRepository, ModuleRepository>();
 
 // Services for business logic
 builder.Services.AddScoped<IPasswordValidator, PasswordValidator>();
@@ -66,7 +67,7 @@ builder.Services.AddCors(options =>
     options.AddPolicy(name: myAllowSpecificOrigins,
         policy =>
         {
-            policy.WithOrigins(builder.Configuration.GetValue<string>("AllowedOrigin")!)
+            policy.WithOrigins(builder.Configuration.GetSection("AllowedOrigins").Get<string[]>())
                 .AllowAnyHeader()
                 .AllowAnyMethod()
                 .AllowCredentials();

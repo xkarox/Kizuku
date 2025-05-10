@@ -45,7 +45,7 @@ public class StatusRepository(
     {
         try
         {
-            var query = db.Statuses.Where(u => u == entity)
+            var query = db.Statuses.Where(s => s.Id == entity.Id)
                 .AsQueryable();
             var result = await query.FirstOrDefaultAsync();
             if (result is null)
@@ -68,7 +68,6 @@ public class StatusRepository(
         }
         
         entityToUpdate!.Name = entity.Name;
-        entityToUpdate.Topics = entity.Topics;
         
         try
         {

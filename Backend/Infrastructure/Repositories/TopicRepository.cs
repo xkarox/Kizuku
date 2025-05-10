@@ -67,7 +67,12 @@ public class TopicRepository
         }
         
         entityToUpdate!.Name = entity.Name;
-        entityToUpdate.Topics = entity.Topics;
+        entityToUpdate.Description = entity.Description;
+        entityToUpdate.CreatedAt = entity.CreatedAt;
+        entityToUpdate.UpdatedAt = entity.UpdatedAt;
+        entityToUpdate.StatusId = entity.StatusId;
+        entityToUpdate.ModuleId = entity.ModuleId;
+        entityToUpdate.ParentTopicId = entity.ParentTopicId;
         
         try
         {

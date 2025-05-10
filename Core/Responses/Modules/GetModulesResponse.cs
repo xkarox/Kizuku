@@ -2,18 +2,18 @@ using Core.Entities;
 
 namespace Core.Responses;
 
-public record UserModulesResponse
+public record GetModulesResponse : IResponse
 {
-    public Guid UserId { get; set; }
-    public required ICollection<Module> Modules { get; set; }
+    public Guid UserId { get; init; }
+    public required ICollection<Module> Modules { get; init; }
 }
 
 public static class UserModulesResponseExtensions
 {
-    public static UserModulesResponse ToUserModulesResponse(
+    public static GetModulesResponse ToUserModulesResponse(
         this IEnumerable<Module> modules, Guid userId)
     {
-        return new UserModulesResponse
+        return new GetModulesResponse
         {
             UserId = userId,
             Modules = modules.ToList(),

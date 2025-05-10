@@ -45,7 +45,7 @@ public class ModuleRepository(
     {
         try
         {
-            var query = db.Modules.Where(u => u == entity)
+            var query = db.Modules.Where(m => m.Id == entity.Id)
                 .AsQueryable();
             var result = await query.FirstOrDefaultAsync();
             if (result is null)
