@@ -49,6 +49,11 @@ public class AuthenticationService(
             logger.Log(LogLevel.Debug, "Logout successful");
             _authStateProvider.NotifyAuthenticationStateChanged();
         }
+        else
+        {
+            var error = await response.Content.ReadFromJsonAsync<Error>();
+            logger.Log(LogLevel.Warning, $"Logout failed: {error?.Message ?? "Unknown error"}");
+        }
     }
 
     public async Task<Result<RegistrationResponse>> Register(RegistrationRequest registrationRequest)
