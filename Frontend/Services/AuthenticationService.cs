@@ -25,7 +25,7 @@ public class AuthenticationService(
         if (!response.IsSuccessStatusCode)
         {
             var error = await response.Content.ReadFromJsonAsync<Error>();
-            logger.Log(LogLevel.Debug, error.Message);
+            logger.Log(LogLevel.Debug, error != null ? error.Message : "Unknown error");
             return Result<LoginResponse>.Failure(error ?? new Error("No error provided"));
         }
         _authStateProvider.NotifyAuthenticationStateChanged();
@@ -62,8 +62,8 @@ public class AuthenticationService(
         if (!response.IsSuccessStatusCode)
         {
             var error = await response.Content.ReadFromJsonAsync<Error>();
-            logger.Log(LogLevel.Debug, error.Message);
-            return Result<RegistrationResponse>.Failure(error ?? new Error("No error provided"));
+            logger.Log(LogLevel.Debug, error != null ? error.Message : "Unknown error");
+            return Result<RegistrationResponse>.Failure(error ?? new Error("Unknown error"));
         };
         var registrationResponse = await response.Content
             .ReadFromJsonAsync<RegistrationResponse>();
@@ -71,7 +71,7 @@ public class AuthenticationService(
         {
             logger.Log(LogLevel.Debug, "Registration failed unexpectedly");
             return Result<RegistrationResponse>.Failure(
-                new Error("No RegistrationResponse recieved"));
+                new Error("No RegistrationResponse received"));
         }
         logger.Log(LogLevel.Debug, registrationResponse.ToString());
         return Result<RegistrationResponse>.Success(registrationResponse);
