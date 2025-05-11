@@ -8,6 +8,10 @@
 .center-h {
     display: flex;
     justify-content: center;
+}
+
+.center-v {
+    display: flex;
     align-items: center;
 }
 

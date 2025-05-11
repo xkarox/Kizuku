@@ -17,4 +17,10 @@ public static class CreateModuleResponseExtensions
             Module = module
         };
     }
+
+    public static Module ToModule(
+        this CreateModuleResponse createModuleResponse)
+    {
+        return createModuleResponse.Module;
+    }
 }

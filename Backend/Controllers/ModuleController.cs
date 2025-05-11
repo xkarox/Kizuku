@@ -70,16 +70,17 @@ public class ModuleController(
     }
     
     [Authorize]
-    [HttpDelete]
+    [HttpDelete("/{moduleId}")]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(DeleteModuleResponse))]
     [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(IError))]
-    public async Task<IActionResult> DeleteModule([FromBody] DeleteModuleRequest deleteModuleRequest)
+    public async Task<IActionResult> DeleteModule(string moduleId)
     {
         var id = User.Claims.FirstOrDefault(c => c.Type == System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
         if (string.IsNullOrEmpty(id))
             return BadRequest(new Error("User does not have an identifier claim"));
-        var guid = new Guid(id);
-        var modulesResult = await moduleService.DeleteUserModule(deleteModuleRequest, guid);
+        var userGuid = new Guid(id);
+        var moduleGuid = new Guid(moduleId);
+        var modulesResult = await moduleService.DeleteUserModule(moduleGuid, userGuid);
         if (modulesResult.IsError)
         {
             return BadRequest(modulesResult.Error);

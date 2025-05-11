@@ -1,7 +1,7 @@
 @using System.Net.Mail
 @using Core.Requests
 @using Frontend.Services.Interfaces
-@inject IAuthenticationService AuthService 
+@inject IFrontendAuthenticationService AuthService 
 @inject NavigationManager NavigationManager
 <Card>
     <CardHeader>
@@ -210,6 +210,6 @@
 
     private bool IsUsernameValid(string username)
     {
-        return !(string.IsNullOrWhiteSpace(_username) || _username.Length < 3);
+        return (string.IsNullOrWhiteSpace(_username) || _username.Length < 3);
     }
 }

@@ -4,16 +4,16 @@ using Core.Errors;
 using Core.Requests;
 using Core.Responses;
 using Frontend.Cookie;
+using Frontend.Services.Interfaces;
 using Microsoft.AspNetCore.Components.Authorization;
-using IAuthenticationService = Frontend.Services.Interfaces.IAuthenticationService;
 
 namespace Frontend.Services;
 
-public class AuthenticationService(
+public class FrontendAuthenticationService(
     IHttpClientFactory httpClientFactory,
     AuthenticationStateProvider authStateProvider,
-    ILogger<AuthenticationService> logger)
-    : IAuthenticationService
+    ILogger<FrontendAuthenticationService> logger)
+    : IFrontendAuthenticationService
 {
     private readonly CookieAuthenticationStateProvider _authStateProvider =
         (authStateProvider as CookieAuthenticationStateProvider)!;

@@ -23,4 +23,16 @@ public static class UpdateModuleResponseExtensions
             UpdatedAt = module.UpdatedAt
         };
     }
+
+    public static Module ToModule(
+        this UpdateModuleResponse updateModuleResponse)
+    {
+        return new Module
+        {
+            Id = updateModuleResponse.ModuleId,
+            Name = updateModuleResponse.Name,
+            Description = updateModuleResponse.Description,
+            UpdatedAt = updateModuleResponse.UpdatedAt
+        };
+    }
 }

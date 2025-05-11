@@ -17,7 +17,7 @@ builder.Services.AddCascadingAuthenticationState();
 builder.Services.AddSysinfocus(jsCssFromCDN: false);
 builder.Services.AddScoped<CookieDelegatingHandler>();
 builder.Services.AddScoped<AuthenticationStateProvider, CookieAuthenticationStateProvider>();
-builder.Services.AddScoped<IAuthenticationService, AuthenticationService>();
+builder.Services.AddScoped<IFrontendAuthenticationService, FrontendAuthenticationService>();
 
 var baseUrl = builder.Configuration.GetValue<string>("ApiBaseUrl");
 if (string.IsNullOrEmpty(baseUrl))

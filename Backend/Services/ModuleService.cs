@@ -70,11 +70,14 @@ public class ModuleService(
         }
     }
     
-    public async Task<Result<Module>> DeleteUserModule(DeleteModuleRequest deleteModuleRequest, Guid userId)
+    public async Task<Result<Module>> DeleteUserModule(Guid moduleId, Guid userId)
     {
-        var module = db.Modules.FirstOrDefault(u => u.Id == deleteModuleRequest.ModuleId);
+        var module = db.Modules.FirstOrDefault(u => u.Id == moduleId);
         if (module == null)
-            return Result<Module>.Failure(new EntityNotFoundError<Module>(deleteModuleRequest.ModuleId));
+            return Result<Module>.Failure(new EntityNotFoundError<Module>(moduleId));
+        var moduleUserId = module.UserId;
+        if (moduleUserId != userId)
+            return Result<Module>.Failure(new CrudOperationOwnershipError());
         db.Modules.Remove(module);
         try
         {
