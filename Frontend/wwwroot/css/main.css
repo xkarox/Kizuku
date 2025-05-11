@@ -33,3 +33,49 @@
     margin: 0.5rem;
     color: white !important;
 }
+
+/*Can be put into seperate css file*/
+.module-overview-item {
+    margin: 1rem;
+    min-width: 20%;
+    max-width: 33%;
+    height: 6rem;
+    position: relative;
+}
+
+.progress-bar {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%; /* This will take the var(--progress-bar-height) from the container */
+    width: 60%;
+    background: linear-gradient(135deg, #8937DB 0%, #BC34D9 30%, rgba(188, 52, 217, 0.5) 50%, transparent 100%); /* Color of the progress bar */
+    transition: width 0.3s ease;
+
+    /*
+      Defines the shape of the progress bar:
+      P1: (0 0)          - Top-left corner
+      P2: (100% 0)       - Top-right corner (this is the full width of the current progress)
+      P3: (calc(100% - var(--diagonal-slant-width)) 100%) - Bottom-right of the diagonal.
+                                                            It's at the bottom (100% height) but shifted
+                                                            left by --diagonal-slant-width from the full width.
+      P4: (0 100%)       - Bottom-left corner
+    */
+    /*clip-path: polygon(*/
+    /*        0 0,*/
+    /*        100% 0,*/
+    /*        calc(100% - var(96px)) 100%,*/
+    /*        0 100%*/
+    /*);*/
+    clip-path: polygon(0 0, 100% 0, calc(100% - 2rem) 100%, 0% 100%);
+}
+
+.content {
+    position: relative;
+    justify-content: space-between;
+    z-index: 1;
+    color: white;
+    text-align: center;
+    font-weight: bold;
+    width: 100%;
+}

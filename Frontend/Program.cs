@@ -18,6 +18,7 @@ builder.Services.AddSysinfocus(jsCssFromCDN: false);
 builder.Services.AddScoped<CookieDelegatingHandler>();
 builder.Services.AddScoped<AuthenticationStateProvider, CookieAuthenticationStateProvider>();
 builder.Services.AddScoped<IFrontendAuthenticationService, FrontendAuthenticationService>();
+builder.Services.AddScoped<IFrontendModuleService, FrontendModuleService>();
 
 var baseUrl = builder.Configuration.GetValue<string>("ApiBaseUrl");
 if (string.IsNullOrEmpty(baseUrl))
