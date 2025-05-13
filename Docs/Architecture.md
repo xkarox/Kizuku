@@ -2,11 +2,13 @@
 
 ## Overview
 
-Kizuku is built on a clean, layered architecture designed for maintainability and separation of concerns. The architecture follows modern best practices for Blazor applications, with a clear separation between frontend and backend components.
+Kizuku is built on a clean, layered architecture designed for maintainability and separation of concerns. 
+The architecture follows modern best practices for Blazor applications, with a clear separation between frontend and backend components.
 
 ## Architecture Diagram
-- ![Mermaid Diagram May 13 2025.png](media/Mermaid%20Diagram%20May%2013%202025.png)
-+ ![Class diagram of Kizuku application architecture](media/kizuku_arch_class_diagram.png)
+
+![Class diagram of Kizuku application architecture](media/kizuku_arch_class_diagram.png)
+
 ## Design Decisions
 
 ### Layered Architecture
@@ -42,13 +44,13 @@ This separation provides several benefits:
 Kizuku uses a Result pattern for error handling instead of throwing exceptions:
 
 ```csharp
-public async Task> GetUserById(string id)
+public async Task<Result<User>> GetUserById(string id)
 {
     var user = await _repository.GetById(id);
     if (user == null)
-        return Result.Failure("User not found");
+        return Result<User>.Failure(new EntityNotFoundError($"User with id {id} not found."));
     
-    return Result.Success(_mapper.Map(user));
+    return Result<User>.Success(user);
 }
 ```
 
@@ -70,8 +72,8 @@ The planned ViewModel layer will:
 
 - **Frontend**: Blazor WebAssembly
 - **Backend**: ASP.NET Core Web API
-- **Database**: SQLite with Entity Framework Core
-- **Authentication**: JWT-based authentication
+- **Database**: SQLite (Dev) with Entity Framework Core
+- **Authentication**: ASP.NET Cookie Authentication
 
 ## Development Principles
 
