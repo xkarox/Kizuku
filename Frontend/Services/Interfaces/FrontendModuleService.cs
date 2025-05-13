@@ -16,6 +16,10 @@ public class FrontendModuleService(
     
     public async Task<Result<Module>> CreateModule(CreateModuleRequest createModuleRequest)
     {
+        if (createModuleRequest == null)
+        {
+            return Result<Module>.Failure(new Error("Invalid request"));
+        }
         var response = await _httpClient.PostAsJsonAsync("api/Module", createModuleRequest);
         if (!response.IsSuccessStatusCode)
         {
@@ -56,6 +60,10 @@ public class FrontendModuleService(
 
     public async Task<Result<Module>> UpdateModule(UpdateModuleRequest updateModuleRequest)
     {
+        if (updateModuleRequest == null)
+        {
+            return Result<Module>.Failure(new Error("Invalid request"));
+        }
         var response = await _httpClient.PutAsJsonAsync("api/Module", updateModuleRequest);
         if (!response.IsSuccessStatusCode)
         {
@@ -76,7 +84,11 @@ public class FrontendModuleService(
 
     public async Task<Result<Guid>> DeleteModule(Guid id)
     {
-        var response = await _httpClient.DeleteAsync("api/Module");
+        if (id == Guid.Empty || id == null)
+        {
+            return Result<Guid>.Failure(new Error("Invalid ModuleId"));
+        }
+        var response = await _httpClient.DeleteAsync($"api/Module/{id}");
         if (!response.IsSuccessStatusCode)
         {
             var error = await response.Content.ReadFromJsonAsync<Error>();

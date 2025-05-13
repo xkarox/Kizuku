@@ -2,7 +2,7 @@
 @using Frontend.Components.Module
 @inject NavigationManager NavigationManager
 
-<div class="flex-col" style="max-width: 66vw">
+<div class="flex-col" style="max-width: 128rem; min-width: 80rem">
     <Animate Type="AnimationType.SlideFade" Duration="0.3s"
              FromY="50px" ToY="0" Ease="EasingType.Ease_Out" Iteration="1" >
         <div class="flex-row center-v">
@@ -16,7 +16,6 @@
 </div>
 
 @code {
-
     private void NavigateToIndex()
     {
         NavigationManager.NavigateTo("/");

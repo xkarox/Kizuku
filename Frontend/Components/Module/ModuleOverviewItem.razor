@@ -1,18 +1,43 @@
 @using System.Drawing
+@using Core.Entities
 <div class="module-overview-item center-hv">
     <Card>
         <CardContent>
-                <div class="progress-bar" style="width: 60%"></div>
+                <div class="progress-bar" style="width: @_percent;"></div>
                 <div class="content center-hv flex-row">
-                    <Text Content="Semster #1" Weight="FontWeights.W500" SizeInRem="2"></Text>
+                    <Text Content="@FormatNameToMaxLength21(Module.Name)" Weight="FontWeights.W500" SizeInRem="1"></Text>
                     <Separator Vertical></Separator>
-                    <Text Content="60%" Weight="FontWeights.W300" SizeInRem="1"></Text>
+                    <div class="center-h" style="width: 5rem;">
+                        <Text Content="@_percent" Weight="FontWeights.W300"
+                              SizeInRem="1"></Text>
+                    </div>
                     <Separator Vertical></Separator>
-                    <Button Type="ButtonType.Icon" Icon="keyboard_arrow_right" Size="ButtonSize.Small"></Button>
+                    <div class="center-h" style="width: 3rem;">
+                        <Button Type="ButtonType.Icon" Icon="keyboard_arrow_right" Size="ButtonSize.Small"></Button>
+                    </div>
             </div>
         </CardContent>
     </Card>
 </div>
 @code {
+    [Parameter] public Module Module { get; set; }
+    private Random _random;
+    private string _percent;
     
+    public override Task SetParametersAsync(ParameterView parameters)
+    {
+        _random = new Random();
+        _percent = @_random.NextDouble().ToString("P1");
+        return base.SetParametersAsync(parameters);
+    }
+    
+
+    private string FormatNameToMaxLength21(string name)
+    {
+        if (name.Length <= 21) return name;
+        name = name.Substring(0, 18);
+        name = name + "...";
+        return name;
+    }
+
 }
