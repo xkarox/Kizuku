@@ -5,9 +5,8 @@
 Kizuku is built on a clean, layered architecture designed for maintainability and separation of concerns. The architecture follows modern best practices for Blazor applications, with a clear separation between frontend and backend components.
 
 ## Architecture Diagram
-
-![Mermaid Diagram May 13 2025.png](media/Mermaid%20Diagram%20May%2013%202025.png)
-
+- ![Mermaid Diagram May 13 2025.png](media/Mermaid%20Diagram%20May%2013%202025.png)
++ ![Class diagram of Kizuku application architecture](media/kizuku_arch_class_diagram.png)
 ## Design Decisions
 
 ### Layered Architecture
