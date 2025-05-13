@@ -28,6 +28,9 @@ This project utilizes the following technologies:
 *   **Frontend:** Blazor WebAssembly
 *   **Database:** Entity Framework Core with Sqlite (for development)
 
+## 🏛️ Architecture
+
+**[Architecture Documentation](Docs/Architecture.md)**
 ## 📸 Screenshots/GIFs
 
 ## 🚀 Getting Started / Installation
