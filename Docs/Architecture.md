@@ -5,9 +5,13 @@
 Kizuku is built on a clean, layered architecture designed for maintainability and separation of concerns. 
 The architecture follows modern best practices for Blazor applications, with a clear separation between frontend and backend components.
 
-## Architecture Diagram
+## Architecture Class Diagram
 
 ![Class diagram of Kizuku application architecture](media/kizuku_arch_class_diagram.png)
+
+## Architecture Sequence Diagram
+
+![Sequence diagram of Kizuku application architecture](media/kizuku_arch_seq_diagram.png)
 
 ## Design Decisions
 
@@ -83,3 +87,4 @@ The planned ViewModel layer will:
 - **Clean Architecture**: Ensuring dependencies point inward
 
 This architecture supports our goals of creating a maintainable, testable, and scalable application while following modern best practices in .NET development.
+
