@@ -23,7 +23,7 @@ builder.Services.AddScoped<AuthComponentStateContainer>();
 
 // add ui stuff 
 builder.Services.AddSysinfocus(jsCssFromCDN: false);
-var vmAssembly = typeof(LoginViewModel).Assembly;
+var vmAssembly = typeof(AuthComponentViewModel).Assembly;
 builder.Services.AddMvvm(options => {
     options.RegisterViewModelsFromAssembly(vmAssembly);
 });
@@ -32,10 +32,12 @@ builder.Services.AddMvvm(options => {
 builder.Services.AddAuthorizationCore();
 builder.Services.AddCascadingAuthenticationState();
 builder.Services.AddScoped<CookieDelegatingHandler>();
-builder.Services.AddScoped<AuthenticationStateProvider, CookieAuthenticationStateProvider>();
+builder.Services.AddScoped<AuthenticationStateProvider, 
+    CookieAuthenticationStateProvider>();
 
 // add services 
-builder.Services.AddScoped<IFrontendAuthenticationService, FrontendAuthenticationService>();
+builder.Services.AddScoped<IFrontendAuthenticationService, 
+    FrontendAuthenticationService>();
 builder.Services.AddScoped<IFrontendModuleService, FrontendModuleService>();
 
 var baseUrl = builder.Configuration.GetValue<string>("ApiBaseUrl");
@@ -47,7 +49,8 @@ builder.Services.AddHttpClient("API", client =>
 })
 .AddHttpMessageHandler<CookieDelegatingHandler>();
 
-builder.Logging.AddConfiguration(builder.Configuration.GetSection("Logging"));
+builder.Logging.AddConfiguration(builder.Configuration
+    .GetSection("Logging"));
     
 
 await builder.Build().RunAsync();
