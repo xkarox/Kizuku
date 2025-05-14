@@ -5,19 +5,36 @@ using Frontend;
 using Frontend.Cookie;
 using Frontend.Services;
 using Frontend.Services.Interfaces;
+using Frontend.StateContainers;
+using Frontend.ViewModels;
 using Microsoft.AspNetCore.Components.Authorization;
 using Sysinfocus.AspNetCore.Components;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");
 builder.RootComponents.Add<HeadOutlet>("head::after");
-builder.Services.AddMvvm();
+builder.Services.AddMvvm(options => {
+    options.HostingModelType = BlazorHostingModelType.WebAssembly;
+});
+
+
+// add state container
+builder.Services.AddScoped<AuthComponentStateContainer>();
+
+// add ui stuff 
+builder.Services.AddSysinfocus(jsCssFromCDN: false);
+var vmAssembly = typeof(LoginViewModel).Assembly;
+builder.Services.AddMvvm(options => {
+    options.RegisterViewModelsFromAssembly(vmAssembly);
+});
+
+// add auth stuff 
 builder.Services.AddAuthorizationCore();
 builder.Services.AddCascadingAuthenticationState();
-
-builder.Services.AddSysinfocus(jsCssFromCDN: false);
 builder.Services.AddScoped<CookieDelegatingHandler>();
 builder.Services.AddScoped<AuthenticationStateProvider, CookieAuthenticationStateProvider>();
+
+// add services 
 builder.Services.AddScoped<IFrontendAuthenticationService, FrontendAuthenticationService>();
 builder.Services.AddScoped<IFrontendModuleService, FrontendModuleService>();
 
