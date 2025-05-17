@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Components;
 
 namespace Frontend.ViewModels;
 
-public class AuthComponentViewModel
+public partial class AuthComponentViewModel
     (IFrontendAuthenticationService authService,
      AuthComponentStateContainer state,
      NavigationManager navigationManager)
