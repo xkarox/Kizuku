@@ -2,15 +2,22 @@
 @using Microsoft.AspNetCore.Components.Authorization
 @inherits LayoutComponentBase
 @inject Initialization init
-@inject IAuthenticationService AuthService
+@inject IFrontendAuthenticationService AuthService
 @inject NavigationManager NavigationManager
 
 <div @onclick="init.HandleMainLayoutClickEvent">
     <NavigationMenu>
         <div class="flex-row" style="justify-content: space-between; height:  5vh">
-            <div @onclick="NavigateToIndex" class="center-h" style="cursor: pointer;margin: 0.5rem 0.5rem 0.5rem 1rem;">
-                <Text Content="Kizuku" GradientColors="@Colors.PrimarySecondary" ShowGradient
-                      Weight="FontWeights.W600" ></Text>
+            <div class="flex-row">
+                <div @onclick="NavigateToIndex" class="center-hv" style="cursor: pointer;margin: 0.5rem 1.5rem 0.5rem 1rem;">
+                    <Text Content="Kizuku" GradientColors="@Colors.PrimarySecondary" ShowGradient
+                          Weight="FontWeights.W600" SizeInRem="2"></Text>
+                </div>
+                <AuthorizeView>
+                    <Authorized>
+                        <NavMenuItem Id="nav-modules" Title="Modules" Url="/Modules"/>
+                    </Authorized>
+                </AuthorizeView>
             </div>
             <AuthorizeView>
                 <NotAuthorized>
@@ -31,8 +38,8 @@
                     </div>
                 </NotAuthorized>
                 <Authorized>
-                    <div class="flex-row">
-                        <NavMenuItem Id="menu-2" Title="User Info" Url="/user-info"/>
+                    <div class="flex-row center-hv">
+                        <NavMenuItem Id="nav-user-info" Title="User Info" Url="/user-info"/>
                         <Button OnClick="HandleLogout"
                                 Style="border: none; height: 36px"
                                 Class="kizuku-button">
@@ -47,7 +54,7 @@
             </AuthorizeView>
         </div>
     </NavigationMenu>
-    <div style="height: 95vh">
+    <div style="height: 95vh;" class="center-h">
         @Body
     </div>
 </div>
@@ -82,6 +89,11 @@
     private void NavigateToIndex()
     {
         NavigationManager.NavigateTo("/");
+    }
+    
+    private void NavigateToModules()
+    {
+        NavigationManager.NavigateTo("/Modules");
     }
     
     private void ToggleTheme()

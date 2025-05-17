@@ -1,0 +1,23 @@
+@page "/Modules"
+@using Frontend.Components.Module
+@inject NavigationManager NavigationManager
+
+<div class="flex-col" style="max-width: 128rem; min-width: 80rem">
+    <Animate Type="AnimationType.SlideFade" Duration="0.3s"
+             FromY="50px" ToY="0" Ease="EasingType.Ease_Out" Iteration="1" >
+        <div class="flex-row center-v">
+            <Button Type="ButtonType.Outline" Icon="arrow_back" Style="margin: 1rem"
+                    OnClick="NavigateToIndex" Size="ButtonSize.Large"></Button>
+            <Text SizeInRem="3" Content="Modules" GradientColors="@Colors.PrimarySecondary" ShowGradient></Text>
+        </div>
+        <Separator Style="margin-bottom: 2rem"></Separator>
+        <ModuleOverview></ModuleOverview>
+    </Animate>
+</div>
+
+@code {
+    private void NavigateToIndex()
+    {
+        NavigationManager.NavigateTo("/");
+    }
+}

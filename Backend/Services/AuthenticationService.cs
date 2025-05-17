@@ -39,6 +39,7 @@ public class AuthenticationService(
             new Claim(ClaimTypes.Name, user!.Username),
             new Claim(ClaimTypes.Email, user.Email),
             new Claim(ClaimTypes.Role, "User"),
+            new Claim(ClaimTypes.NameIdentifier, user.UserId.ToString()),
         };
         
         var claimsIdentity = new ClaimsIdentity(
