@@ -12,82 +12,55 @@ namespace Backend.Services;
 
 public class ModuleService(
     IKizukuContext db,
-    IModuleRepository moduleRepository
+    IModuleRepository moduleRepository,
+    ILogger<ModuleService> logger
     )
     : IModuleService
 {
     public async Task<Result<IEnumerable<Module>>> GetUserModules(Guid userId)
     {
-        try
+        var moduleResult =  await moduleRepository.GetAllByUserId(userId);
+        if (moduleResult.IsError)
         {
-            var query = db.Modules.Where(u => u.UserId == userId)
-                .AsQueryable();
-            var result = await query.ToListAsync();
-            return Result<IEnumerable<Module>>.Success(result);
+            logger.LogError($"Failed to get User modules for: {userId}");
+            return Result<IEnumerable<Module>>.Failure(moduleResult.Error);
         }
-        catch (ArgumentNullException e)
-        {
-            return Result<IEnumerable<Module>>.Failure(new DatabaseError(e.Message));
-        }
+        return moduleResult;
     }
 
     public async Task<Result<Module>> CreateUserModule(CreateModuleRequest createModuleRequest, Guid userId)
     {
         var module = createModuleRequest.ToModule(userId);
-        db.Modules.Add(module);
-        try
+        var result = await moduleRepository.Create(module);
+        if (result.IsError)
         {
-            await db.SaveChangesAsync();
-            return Result<Module>.Success(module);
+            logger.LogError($"Failed to create module for: {userId}");
+            return Result<Module>.Failure(result.Error);
         }
-        catch (DbUpdateException e)
-        {
-            return Result<Module>.Failure(new DatabaseError(e.Message));
-        }
+        return Result<Module>.Success(module);
     }
 
     public async Task<Result<Module>> UpdateUserModule(UpdateModuleRequest updateModuleRequest, Guid userId)
     {
-        var module = await db.Modules.FirstOrDefaultAsync(u => u.Id == updateModuleRequest.ModuleId);
-        if (module == null)
-            return Result<Module>.Failure(new EntityNotFoundError<Module>(updateModuleRequest.ModuleId));
-        var moduleUserId = module.UserId;
-        if (moduleUserId != userId)
-            return Result<Module>.Failure(new CrudOperationOwnershipError());
-        
-        module.Name = updateModuleRequest.Name ?? module.Name;
-        module.Description = updateModuleRequest.Description ?? module.Description;
-        module.UpdatedAt = updateModuleRequest.UpdatedAt;
-
-        try
+        var module = updateModuleRequest.ToModule(userId);
+        var result = await moduleRepository.Update(module);
+        if (result.IsError)
         {
-            await db.SaveChangesAsync();
-            return Result<Module>.Success(module);
+            logger.LogError($"Failed to update module for: {userId}");
+            return Result<Module>.Failure(result.Error);
         }
-        catch (DbUpdateException e)
-        {
-            return Result<Module>.Failure(new DatabaseError(e.Message));
-        }
+        return Result<Module>.Success(module);
     }
     
-    public async Task<Result<Module>> DeleteUserModule(Guid moduleId, Guid userId)
+    public async Task<Result> DeleteUserModule(Guid moduleId, Guid userId)
     {
-        var module = db.Modules.FirstOrDefault(u => u.Id == moduleId);
-        if (module == null)
-            return Result<Module>.Failure(new EntityNotFoundError<Module>(moduleId));
-        var moduleUserId = module.UserId;
-        if (moduleUserId != userId)
-            return Result<Module>.Failure(new CrudOperationOwnershipError());
-        db.Modules.Remove(module);
-        try
+        var result = await moduleRepository.Delete(new Module() { Id = moduleId, Name = "Name" });
+        if (result.IsError)
         {
-            await db.SaveChangesAsync();
-            return Result<Module>.Success(module);
+            logger.LogError($"Failed to delete module for: {userId}");
+            return Result.Failure(result.Error);
         }
-        catch (DbUpdateException e)
-        {
-            return Result<Module>.Failure(new DatabaseError(e.Message));
-        }
+        return Result.Success();
     }
     
 }

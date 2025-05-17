@@ -7,7 +7,8 @@ using Microsoft.EntityFrameworkCore;
 namespace Backend.Infrastructure.Repositories;
 
 public class ModuleRepository(
-    IKizukuContext db
+    IKizukuContext db,
+    Logger<ModuleRepository> logger
     ) : IModuleRepository
 {
      public async Task<Result<Module>> Create(Module entity)
@@ -23,6 +24,7 @@ public class ModuleRepository(
         }
         catch (DbUpdateException e)
         {
+            logger.LogError(e.Message);
             return Result<Module>.Failure(new DatabaseError(e.Message));
         }
     }
@@ -57,6 +59,38 @@ public class ModuleRepository(
             return Result<Module>.Failure(new DatabaseError(e.Message));
         }
     }
+    
+    public async Task<Result<IEnumerable<Module>>> GetAllByUserId(Guid userId)
+    {
+        try
+        {
+            var query = db.Modules.Where(u => u.UserId == userId)
+                .AsQueryable();
+            var result = await query.ToListAsync();
+            return Result<IEnumerable<Module>>.Success(result);
+        }
+        catch (ArgumentNullException e)
+        {
+            return Result<IEnumerable<Module>>.Failure(new DatabaseError(e.Message));
+        }
+    }
+    
+    public async Task<Result<Module>> GetWithTopics(Module entity)
+    {
+        try
+        {
+            var query = db.Modules.Include(m => m.Topics).Where(m => m.Id == entity.Id)
+                .AsQueryable();
+            var result = await query.FirstOrDefaultAsync();
+            if (result is null)
+                return Result<Module>.Failure(new EntityNotFoundError<Module>(entity));
+            return Result<Module>.Success(result);
+        }
+        catch (ArgumentNullException e)
+        {
+            return Result<Module>.Failure(new DatabaseError(e.Message));
+        }
+    }
 
     public async Task<Result> Update(Module entity)
     { 
@@ -67,14 +101,9 @@ public class ModuleRepository(
             return Result.Failure(new EntityNotFoundError<Module>(entity)); 
         }
         
-        entityToUpdate!.Name = entity.Name;
-        entityToUpdate.Description = entity.Description;
-        entityToUpdate.CreatedAt = entity.CreatedAt;
+        entityToUpdate!.Name = entity.Name ?? entityToUpdate.Name;
+        entityToUpdate.Description = entity.Description ?? entityToUpdate.Description;
         entityToUpdate.UpdatedAt = entity.UpdatedAt;
-        entityToUpdate.Topics = entity.Topics;
-        
-        entityToUpdate.UserId = entity.UserId;
-        entityToUpdate.User = entity.User;
         
         try
         {
