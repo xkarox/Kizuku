@@ -1,39 +1,17 @@
 @using Core.Entities
 <div class="flex-row center-h">
-    @foreach (var module in modules)
+    @foreach (var module in Modules)
     {
+       
         <ModuleOverviewItem Module="@module"></ModuleOverviewItem>
     }
 </div>
 
 @code {
-    private List<Module> modules = new List<Module>();
+    [Parameter] public required IEnumerable<Module> Modules { get; set; } = null!;
 
     public override Task SetParametersAsync(ParameterView parameters)
     {
-        modules.AddRange(new List<Module>
-        {
-            new Module { Id = Guid.NewGuid(), Name = "Foundations of Learning", Description = "Building your core knowledge base for university success.", CreatedAt = DateTime.Now, UpdatedAt = DateTime.Now },
-            new Module { Id = Guid.NewGuid(), Name = "Effective Study Habits", Description = "Constructing and refining productive study routines.", CreatedAt = DateTime.Now, UpdatedAt = DateTime.Now },
-            new Module { Id = Guid.NewGuid(), Name = "Lean Study Principles", Description = "Identifying and eliminating inefficiencies in your study process.", CreatedAt = DateTime.Now, UpdatedAt = DateTime.Now },
-            new Module { Id = Guid.NewGuid(), Name = "Gamified Goal Setting", Description = "Making study goals engaging and motivating through gamification.", CreatedAt = DateTime.Now, UpdatedAt = DateTime.Now },
-            new Module { Id = Guid.NewGuid(), Name = "Progress Tracking & Analysis", Description = "Measuring your learning and identifying areas for improvement.", CreatedAt = DateTime.Now, UpdatedAt = DateTime.Now },
-            new Module { Id = Guid.NewGuid(), Name = "Time Management Mastery", Description = "Optimizing your study schedule for maximum productivity.", CreatedAt = DateTime.Now, UpdatedAt = DateTime.Now },
-            new Module { Id = Guid.NewGuid(), Name = "Critical Thinking Development", Description = "Enhancing analytical skills for academic challenges.", CreatedAt = DateTime.Now, UpdatedAt = DateTime.Now },
-            new Module { Id = Guid.NewGuid(), Name = "Note-Taking Strategies", Description = "Techniques for capturing and organizing information effectively.", CreatedAt = DateTime.Now, UpdatedAt = DateTime.Now },
-            new Module { Id = Guid.NewGuid(), Name = "Exam Preparation Techniques", Description = "Structured approaches to ace your university exams.", CreatedAt = DateTime.Now, UpdatedAt = DateTime.Now },
-            new Module { Id = Guid.NewGuid(), Name = "Continuous Improvement Loop", Description = "Establishing a system for ongoing refinement of study methods.", CreatedAt = DateTime.Now, UpdatedAt = DateTime.Now },
-            new Module { Id = Guid.NewGuid(), Name = "Understanding Learning Styles", Description = "Adapting study techniques to your personal learning preferences.", CreatedAt = DateTime.Now, UpdatedAt = DateTime.Now },
-            new Module { Id = Guid.NewGuid(), Name = "Mindset for Success", Description = "Cultivating a positive and resilient academic mindset.", CreatedAt = DateTime.Now, UpdatedAt = DateTime.Now },
-            new Module { Id = Guid.NewGuid(), Name = "Research Skills 101", Description = "Fundamentals of academic research and information gathering.", CreatedAt = DateTime.Now, UpdatedAt = DateTime.Now },
-            new Module { Id = Guid.NewGuid(), Name = "Academic Writing Essentials", Description = "Developing clear and concise writing skills for university.", CreatedAt = DateTime.Now, UpdatedAt = DateTime.Now },
-            new Module { Id = Guid.NewGuid(), Name = "Presentation Skills Workshop", Description = "Building confidence and effectiveness in academic presentations.", CreatedAt = DateTime.Now, UpdatedAt = DateTime.Now },
-            new Module { Id = Guid.NewGuid(), Name = "Collaborative Learning Strategies", Description = "Leveraging group study for enhanced understanding.", CreatedAt = DateTime.Now, UpdatedAt = DateTime.Now },
-            new Module { Id = Guid.NewGuid(), Name = "Stress Management for Students", Description = "Techniques to maintain well-being during demanding study periods.", CreatedAt = DateTime.Now, UpdatedAt = DateTime.Now },
-            new Module { Id = Guid.NewGuid(), Name = "Digital Tools for Study", Description = "Utilizing technology to support your learning journey.", CreatedAt = DateTime.Now, UpdatedAt = DateTime.Now },
-            new Module { Id = Guid.NewGuid(), Name = "Memory Enhancement Techniques", Description = "Strategies to improve information retention and recall.", CreatedAt = DateTime.Now, UpdatedAt = DateTime.Now },
-            new Module { Id = Guid.NewGuid(), Name = "Kizuku App Onboarding", Description = "Getting started with Kizuku to optimize your study process.", CreatedAt = DateTime.Now, UpdatedAt = DateTime.Now }
-        });
         return base.SetParametersAsync(parameters);
     }
 
