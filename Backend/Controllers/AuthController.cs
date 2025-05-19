@@ -16,10 +16,10 @@ using IAuthenticationService = Core.IAuthenticationService;
 namespace Backend.Controllers;
 
 [ApiController]
-[Route("api/[controller]")]
+[Route("api/authenticate")]
 public class AuthController(
     IAuthenticationService authenticationService,
-    IUserService userService
+    IUserManagementService userManagementService
     ) : ControllerBase
 {
     [HttpPost("login")]
@@ -56,7 +56,7 @@ public class AuthController(
     [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(IError))]
     public async Task<IActionResult> Register([FromBody] RegistrationRequest request)
     {
-        var registration = await userService.RegisterUser(request);
+        var registration = await userManagementService.RegisterUser(request);
         if (registration.IsError)
         {
             return BadRequest(registration.Error);

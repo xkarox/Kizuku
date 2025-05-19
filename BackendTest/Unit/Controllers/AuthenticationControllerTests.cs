@@ -15,7 +15,7 @@ namespace BackendTest.Unit.Controllers;
 [TestFixture]
 public class AuthenticationControllerTests
 {
-    Mock<IUserService> _mockUserService;
+    Mock<IUserManagementService> _mockUserService;
     Mock<IAuthenticationService> _mockAuthenticationService;
     Mock<HttpContext> _mockHttpContext;
     AuthController _sut;
@@ -23,7 +23,7 @@ public class AuthenticationControllerTests
     [SetUp]
     public void Setup()
     {
-        _mockUserService = new Mock<IUserService>();
+        _mockUserService = new Mock<IUserManagementService>();
         _mockAuthenticationService = new Mock<IAuthenticationService>();
         _mockHttpContext = new Mock<HttpContext>();
         
