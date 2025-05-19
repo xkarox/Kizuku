@@ -85,6 +85,6 @@ public class StudyManagementController(
         {
             return BadRequest(modulesResult.Error);
         }
-        return Ok(modulesResult.Value!.ToDeleteModuleResponse());
+        return Ok();
     }
 }

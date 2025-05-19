@@ -45,11 +45,6 @@ builder.Services.AddSwaggerGen(c =>
 });
 
 
-
-// Repositories for data access
-builder.Services.AddScoped<IUserRepository, UserRepository>();
-builder.Services.AddScoped<IModuleRepository, ModuleRepository>();
-
 // Services for business logic
 builder.Services.AddScoped<IPasswordValidator, PasswordValidator>();
 builder.Services.AddScoped<IAuthenticationService, AuthenticationService>();
