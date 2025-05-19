@@ -13,12 +13,12 @@ namespace BackendTest.Unit.Services;
 
 [Parallelizable]
 [TestFixture]
-public class UserServiceTests
+public class UserManagementManagementServiceTests
 {
     private Mock<IUserRepository> _mockUserRepository;
     private Mock<IAuthenticationService> _mockAuthenticationService;
     private Mock<IPasswordValidator> _mockPasswordValidator;
-    private UserService _sut = null!;
+    private UserManagementManagementService _sut = null!;
 
     [SetUp]
     public void Setup()
@@ -55,7 +55,7 @@ public class UserServiceTests
         
         _mockPasswordValidator.Setup(validator => 
             validator.Validate(It.IsAny<string>())).Returns(Result.Success);
-        _sut = new UserService(_mockUserRepository.Object, 
+        _sut = new UserManagementManagementService(_mockUserRepository.Object, 
             _mockAuthenticationService.Object,
             _mockPasswordValidator.Object);
         
@@ -101,7 +101,7 @@ public class UserServiceTests
             });
         _mockUserRepository.Setup(repository =>
             repository.GetByEmail(registrationRequest.Email)).ReturnsAsync(successfulResult);
-        _sut = new UserService(_mockUserRepository.Object, 
+        _sut = new UserManagementManagementService(_mockUserRepository.Object, 
             _mockAuthenticationService.Object,
             _mockPasswordValidator.Object);
         
@@ -141,7 +141,7 @@ public class UserServiceTests
             repository.GetByEmail(registrationRequest.Email)).ReturnsAsync(failedResult);
         _mockUserRepository.Setup(repository =>
             repository.GetByUsername(registrationRequest.Username)).ReturnsAsync(successfulResult);
-        _sut = new UserService(_mockUserRepository.Object, 
+        _sut = new UserManagementManagementService(_mockUserRepository.Object, 
             _mockAuthenticationService.Object,
             _mockPasswordValidator.Object);
         
@@ -176,7 +176,7 @@ public class UserServiceTests
             repository.GetByUsername(registrationRequest.Username)).ReturnsAsync(failedResult);
         _mockPasswordValidator.Setup(v => v.Validate(registrationRequest.Password))
             .Returns(failedPasswordValidationResult);
-        _sut = new UserService(_mockUserRepository.Object, 
+        _sut = new UserManagementManagementService(_mockUserRepository.Object, 
             _mockAuthenticationService.Object,
             _mockPasswordValidator.Object);
         
@@ -219,7 +219,7 @@ public class UserServiceTests
         
         _mockPasswordValidator.Setup(validator => 
             validator.Validate(It.IsAny<string>())).Returns(Result.Success);
-        _sut = new UserService(_mockUserRepository.Object, 
+        _sut = new UserManagementManagementService(_mockUserRepository.Object, 
             _mockAuthenticationService.Object,
             _mockPasswordValidator.Object);
         

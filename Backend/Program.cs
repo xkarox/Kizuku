@@ -54,8 +54,8 @@ builder.Services.AddScoped<IModuleRepository, ModuleRepository>();
 // Services for business logic
 builder.Services.AddScoped<IPasswordValidator, PasswordValidator>();
 builder.Services.AddScoped<IAuthenticationService, AuthenticationService>();
-builder.Services.AddScoped<IUserService, UserService>();
-builder.Services.AddScoped<IModuleService, ModuleService>();
+builder.Services.AddScoped<IUserManagementService, UserManagementManagementService>();
+builder.Services.AddScoped<IStudyManagementService, StudyManagementService>();
 
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();

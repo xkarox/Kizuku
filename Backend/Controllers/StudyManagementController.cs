@@ -9,9 +9,9 @@ using Microsoft.AspNetCore.Mvc;
 namespace Backend.Controllers;
 
 [ApiController]
-[Route("api/[controller]")]
-public class ModuleController(
-    IModuleService moduleService
+[Route("api/study_management")]
+public class StudyManagementController(
+    IStudyManagementService studyManagementService
     ) : ControllerBase
 {
     
@@ -25,7 +25,7 @@ public class ModuleController(
         if (string.IsNullOrEmpty(id))
             return BadRequest(new Error("User does not have an identifier claim"));
         var guid = new Guid(id);
-        var modulesResult = await moduleService.GetUserModules(guid);
+        var modulesResult = await studyManagementService.GetUserModules(guid);
         if (modulesResult.IsError)
         {
             return BadRequest(modulesResult.Error);
@@ -43,7 +43,7 @@ public class ModuleController(
         if (string.IsNullOrEmpty(id))
             return BadRequest(new Error("User does not have an identifier claim"));
         var guid = new Guid(id);
-        var modulesResult = await moduleService.CreateUserModule(createModuleRequest, guid);
+        var modulesResult = await studyManagementService.CreateUserModule(createModuleRequest, guid);
         if (modulesResult.IsError)
         {
             return BadRequest(modulesResult.Error);
@@ -61,7 +61,7 @@ public class ModuleController(
         if (string.IsNullOrEmpty(id))
             return BadRequest(new Error("User does not have an identifier claim"));
         var guid = new Guid(id);
-        var modulesResult = await moduleService.UpdateUserModule(updateModuleRequest, guid);
+        var modulesResult = await studyManagementService.UpdateUserModule(updateModuleRequest, guid);
         if (modulesResult.IsError)
         {
             return BadRequest(modulesResult.Error);
@@ -80,7 +80,7 @@ public class ModuleController(
             return BadRequest(new Error("User does not have an identifier claim"));
         var userGuid = new Guid(id);
         var moduleGuid = new Guid(moduleId);
-        var modulesResult = await moduleService.DeleteUserModule(moduleGuid, userGuid);
+        var modulesResult = await studyManagementService.DeleteUserModule(moduleGuid, userGuid);
         if (modulesResult.IsError)
         {
             return BadRequest(modulesResult.Error);
