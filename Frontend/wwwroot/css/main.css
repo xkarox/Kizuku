@@ -8,6 +8,10 @@
 .center-h {
     display: flex;
     justify-content: center;
+}
+
+.center-v {
+    display: flex;
     align-items: center;
 }
 
@@ -28,4 +32,34 @@
     background: linear-gradient(to bottom, #8937DB, #BC34D9);
     margin: 0.5rem;
     color: white !important;
+}
+
+/*Can be put into seperate css file*/
+.module-overview-item {
+    min-width: 25rem;
+    max-width: 25rem;
+    height: 6rem;
+    position: relative;
+}
+
+.progress-bar {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 60%;
+    background: linear-gradient(105deg, #8937DB 0%, #BC34D9 20%, rgba(188, 52, 217, 0.5) 30%, rgba(188, 52, 217, 0.2) 50%, transparent 100%); /* Color of the progress bar */
+    transition: width 0.3s ease;
+    clip-path: polygon(0 0, 100% 0, calc(100% - 2rem) 100%, 0% 100%);
+}
+
+.content {
+    position: relative;
+    display: flex;
+    justify-content: space-evenly;
+    z-index: 1;
+    color: white;
+    text-align: center;
+    font-weight: bold;
+    width: 100%;
 }

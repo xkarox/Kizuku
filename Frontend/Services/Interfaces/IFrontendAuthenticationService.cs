@@ -1,10 +1,11 @@
+using System.Text.Json;
 using Core;
 using Core.Requests;
 using Core.Responses;
 
 namespace Frontend.Services.Interfaces;
 
-public interface IAuthenticationService
+public interface IFrontendAuthenticationService
 {
     public Task<Result<LoginResponse>> Login(LoginRequest loginRequest);
     public Task Logout();
