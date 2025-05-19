@@ -5,7 +5,7 @@ using Core.Responses;
 
 namespace Frontend.Services.Interfaces;
 
-public interface IFrontendModuleService
+public interface IStudyManagementServiceUI
 {
     public Task<Result<Module>> CreateModule(CreateModuleRequest createModuleRequest);
     public Task<Result<IEnumerable<Module>>> GetModules();

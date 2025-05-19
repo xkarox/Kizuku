@@ -8,8 +8,8 @@ using Microsoft.AspNetCore.Components;
 
 namespace Frontend.ViewModels;
 
-public partial class AuthComponentViewModel
-    (IFrontendAuthenticationService authService,
+public class AuthViewModel
+    (IAuthenticationServiceUI authServiceUi,
      AuthComponentStateContainer state,
      NavigationManager navigationManager)
     : ViewModelBase
@@ -42,7 +42,7 @@ public partial class AuthComponentViewModel
             Email = state.Email, Password = state.Password
         };
         var loginResponse = 
-            await authService.Login(loginRequest);
+            await authServiceUi.Login(loginRequest);
         
         if (loginResponse.IsSuccess)
         {
@@ -95,7 +95,7 @@ public partial class AuthComponentViewModel
             Username = state.Username, Email = state.Email, Password = state.Password
         };
         var registrationResponse = 
-            await authService.Register(registrationRequest);
+            await authServiceUi.Register(registrationRequest);
 
         if (registrationResponse.IsSuccess)
         {

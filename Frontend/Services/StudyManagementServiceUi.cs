@@ -7,10 +7,10 @@ using Core.Responses;
 
 namespace Frontend.Services.Interfaces;
 
-public class FrontendModuleService(
+public class StudyManagementServiceUi(
     IHttpClientFactory httpClientFactory,
-    ILogger<FrontendModuleService> logger)
-    : IFrontendModuleService
+    ILogger<StudyManagementServiceUi> logger)
+    : IStudyManagementServiceUI
 {
     private readonly HttpClient _httpClient = httpClientFactory.CreateClient("API");
     

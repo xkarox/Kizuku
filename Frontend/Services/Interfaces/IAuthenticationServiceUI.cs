@@ -5,7 +5,7 @@ using Core.Responses;
 
 namespace Frontend.Services.Interfaces;
 
-public interface IFrontendAuthenticationService
+public interface IAuthenticationServiceUI
 {
     public Task<Result<LoginResponse>> Login(LoginRequest loginRequest);
     public Task Logout();

@@ -10,11 +10,11 @@ using Microsoft.AspNetCore.Components.Authorization;
 
 namespace Frontend.Services;
 
-public class FrontendAuthenticationService(
+public class AuthenticationServiceUi(
     IHttpClientFactory httpClientFactory,
     AuthenticationStateProvider authStateProvider,
-    ILogger<FrontendAuthenticationService> logger)
-    : IFrontendAuthenticationService
+    ILogger<AuthenticationServiceUi> logger)
+    : IAuthenticationServiceUI
 {
     private readonly CookieAuthenticationStateProvider _authStateProvider =
         (authStateProvider as CookieAuthenticationStateProvider)!;

@@ -23,7 +23,7 @@ builder.Services.AddScoped<AuthComponentStateContainer>();
 
 // add ui stuff 
 builder.Services.AddSysinfocus(jsCssFromCDN: false);
-var vmAssembly = typeof(AuthComponentViewModel).Assembly;
+var vmAssembly = typeof(AuthViewModel).Assembly;
 builder.Services.AddMvvm(options => {
     options.RegisterViewModelsFromAssembly(vmAssembly);
 });
@@ -36,9 +36,9 @@ builder.Services.AddScoped<AuthenticationStateProvider,
     CookieAuthenticationStateProvider>();
 
 // add services 
-builder.Services.AddScoped<IFrontendAuthenticationService, 
-    FrontendAuthenticationService>();
-builder.Services.AddScoped<IFrontendModuleService, FrontendModuleService>();
+builder.Services.AddScoped<IAuthenticationServiceUI, 
+    AuthenticationServiceUi>();
+builder.Services.AddScoped<IStudyManagementServiceUI, StudyManagementServiceUi>();
 
 var baseUrl = builder.Configuration.GetValue<string>("ApiBaseUrl");
 if (string.IsNullOrEmpty(baseUrl))
