@@ -25,11 +25,11 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\Core\Core.csproj" />
+      <ProjectReference Include="..\Shared\Shared.csproj" />
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Infrastructure\Migrations\" />
+      <Folder Include="Migrations\" />
     </ItemGroup>
 
 </Project>

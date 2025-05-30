@@ -1,5 +1,4 @@
 using Backend.Infrastructure;
-using Backend.Infrastructure.Repositories;
 using Backend.Json;
 using Backend.Services;
 using Backend.Validators;
@@ -46,14 +45,11 @@ builder.Services.AddSwaggerGen(c =>
 });
 
 
-
-// Repositories for data access
-builder.Services.AddScoped<IUserRepository, UserRepository>();
-
 // Services for business logic
 builder.Services.AddScoped<IPasswordValidator, PasswordValidator>();
 builder.Services.AddScoped<IAuthenticationService, AuthenticationService>();
-builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IUserManagementService, UserManagementManagementService>();
+builder.Services.AddScoped<IStudyManagementService, StudyManagementService>();
 
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
@@ -65,7 +61,7 @@ builder.Services.AddCors(options =>
     options.AddPolicy(name: myAllowSpecificOrigins,
         policy =>
         {
-            policy.WithOrigins(builder.Configuration.GetValue<string>("AllowedOrigin")!)
+            policy.WithOrigins(builder.Configuration.GetSection("AllowedOrigins").Get<string[]>())
                 .AllowAnyHeader()
                 .AllowAnyMethod()
                 .AllowCredentials();
