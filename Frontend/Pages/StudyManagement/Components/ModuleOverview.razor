@@ -1,9 +1,17 @@
+
 @using Core.Entities
 <div class="flex-row center-h">
-    @foreach (var module in Modules)
+    @if (Modules.Any())
     {
+        foreach (var module in Modules)
+        {
        
-        <ModuleOverviewItem Module="@module"></ModuleOverviewItem>
+            <ModuleOverviewItem Module="@module"></ModuleOverviewItem>
+        }
+    }
+    else
+    {
+        <Text>Nothing here yet...</Text>
     }
 </div>
 

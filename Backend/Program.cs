@@ -34,6 +34,7 @@ builder.Services.AddControllers()
         opts.JsonSerializerOptions
             .Converters
             .Add(new ErrorConverterFactory()));;
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
 {
@@ -44,7 +45,6 @@ builder.Services.AddSwaggerGen(c =>
     });
 });
 
-
 // Services for business logic
 builder.Services.AddScoped<IPasswordValidator, PasswordValidator>();
 builder.Services.AddScoped<IAuthenticationService, AuthenticationService>();
@@ -52,7 +52,7 @@ builder.Services.AddScoped<IUserManagementService, UserManagementManagementServi
 builder.Services.AddScoped<IStudyManagementService, StudyManagementService>();
 
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
-builder.Services.AddOpenApi();
+// builder.Services.AddOpenApi();
 
 // Add CORS for frontend
 string myAllowSpecificOrigins = "_myAllowSpecificOrigins";
@@ -66,22 +66,25 @@ builder.Services.AddCors(options =>
                 .AllowAnyMethod()
                 .AllowCredentials();
         });
+    options.AddPolicy("AllowSwagger", policy =>
+        policy.AllowAnyOrigin()
+            .AllowAnyMethod()
+            .AllowAnyHeader());
 });
 
 var app = builder.Build();
-
-app.UseCors(myAllowSpecificOrigins);
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
-    app.MapOpenApi();
     app.UseSwagger();
     app.UseSwaggerUI(c =>
     {
         c.SwaggerEndpoint("/swagger/v1/swagger.json", "Kizuku API v1");
         c.RoutePrefix = "";
     });
+    // Entfernen Sie: app.MapOpenApi();
 }
+
+app.UseCors(myAllowSpecificOrigins);
 
 app.UseHttpsRedirection();
 

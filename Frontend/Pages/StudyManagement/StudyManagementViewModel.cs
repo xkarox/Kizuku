@@ -6,11 +6,12 @@ using Microsoft.AspNetCore.Components;
 
 namespace Frontend.ViewModels;
 
-public partial class ModulesViewModel
+public class StudyManagementViewModel
     (IStudyManagementServiceUI moduleServiceUi) : ViewModelBase
 {
     [Parameter]
     public IEnumerable<Module> Modules { get; set; } = Array.Empty<Module>();
+    public bool ShowCreateNewModule { get; set; } = false;
     
     public async Task FetchModules()
     {
@@ -20,5 +21,11 @@ public partial class ModulesViewModel
             return;
         }
         Modules = result!.Value! ?? Array.Empty<Module>();
-    } 
+    }
+
+    public void AddModuleButtonHandler()
+    {
+        ShowCreateNewModule = true;
+    }
+    
 }

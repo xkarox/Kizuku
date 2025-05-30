@@ -17,6 +17,7 @@ public class StudyManagementController(
     
     [Authorize]
     [HttpGet]
+    [Route("module")]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(GetModulesResponse))]
     [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(IError))]
     public async Task<IActionResult> GetModules()
@@ -35,6 +36,7 @@ public class StudyManagementController(
     
     [Authorize]
     [HttpPost]
+    [Route("module")]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(CreateModuleResponse))]
     [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(IError))]
     public async Task<IActionResult> CreateModule([FromBody] CreateModuleRequest createModuleRequest)
@@ -70,7 +72,7 @@ public class StudyManagementController(
     }
     
     [Authorize]
-    [HttpDelete("/{moduleId}")]
+    [HttpDelete("{moduleId}")]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(DeleteModuleResponse))]
     [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(IError))]
     public async Task<IActionResult> DeleteModule(string moduleId)

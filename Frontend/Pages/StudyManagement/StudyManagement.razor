@@ -1,0 +1,44 @@
+@page "/Modules"
+@using Frontend.Components.Module
+@using Frontend.ViewModels
+@inject NavigationManager NavigationManager
+@inject StudyManagementViewModel ViewModel
+
+<Animate Type="AnimationType.SlideFade" Duration="0.3s"
+         FromY="50px" ToY="0" Ease="EasingType.Ease_Out" Iteration="1" >
+    <div class="flex-col" style="max-width: 128rem; min-width: 80rem;">
+        <Animate Type="AnimationType.SlideFade" Duration="0.3s"
+                 FromY="50px" ToY="0" Ease="EasingType.Ease_Out" Iteration="1" >
+            <div class="flex-row center-v" style="justify-content: space-between;max-width: 128rem; min-width: 80rem;">
+                <div class="flex-row center-v">
+                    <Button Type="ButtonType.Outline" Icon="arrow_back" Style="margin: 1rem"
+                            OnClick="NavigateToIndex" Size="ButtonSize.Large"></Button>
+                    <Text SizeInRem="3" Content="Modules" GradientColors="@Colors.PrimarySecondary" ShowGradient></Text>
+                </div>
+                <div>
+                    <Button Type="ButtonType.Outline" Icon="add" Style="margin: 1rem;"
+                            OnClick="() => { }" Size="ButtonSize.Large"></Button>
+                </div>
+            </div>
+        </Animate>
+        <Separator Style="margin-bottom: 2rem"></Separator>
+        <ModuleOverview Modules="ViewModel.Modules"></ModuleOverview>
+    </div>
+</Animate>
+
+<Drawer Show="@ViewModel.ShowCreateNewModule" OnClose="() => ViewModel.ShowCreateNewModule = false">
+</Drawer>
+
+@code {
+    private void NavigateToIndex()
+    {
+        NavigationManager.NavigateTo("/");
+    }
+
+    public override Task SetParametersAsync(ParameterView parameters)
+    {
+        _ = ViewModel.FetchModules();
+        return base.SetParametersAsync(parameters);
+    }
+
+}

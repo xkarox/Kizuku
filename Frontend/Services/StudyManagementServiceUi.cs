@@ -20,7 +20,7 @@ public class StudyManagementServiceUi(
         {
             return Result<Module>.Failure(new Error("Invalid request"));
         }
-        var response = await _httpClient.PostAsJsonAsync("api/Module", createModuleRequest);
+        var response = await _httpClient.PostAsJsonAsync("api/study_management/module", createModuleRequest);
         if (!response.IsSuccessStatusCode)
         {
             var error = await response.Content.ReadFromJsonAsync<Error>();
@@ -40,7 +40,7 @@ public class StudyManagementServiceUi(
 
     public async Task<Result<IEnumerable<Module>>> GetModules()
     {
-        var response = await _httpClient.GetAsync("api/Module");
+        var response = await _httpClient.GetAsync("api/study_management/module");
         if (!response.IsSuccessStatusCode)
         {
             var error = await response.Content.ReadFromJsonAsync<Error>();
@@ -64,7 +64,7 @@ public class StudyManagementServiceUi(
         {
             return Result<Module>.Failure(new Error("Invalid request"));
         }
-        var response = await _httpClient.PutAsJsonAsync("api/Module", updateModuleRequest);
+        var response = await _httpClient.PutAsJsonAsync("api/study_management", updateModuleRequest);
         if (!response.IsSuccessStatusCode)
         {
             var error = await response.Content.ReadFromJsonAsync<Error>();
@@ -88,7 +88,7 @@ public class StudyManagementServiceUi(
         {
             return Result<Guid>.Failure(new Error("Invalid ModuleId"));
         }
-        var response = await _httpClient.DeleteAsync($"api/Module/{id}");
+        var response = await _httpClient.DeleteAsync($"api/study_management/{id}");
         if (!response.IsSuccessStatusCode)
         {
             var error = await response.Content.ReadFromJsonAsync<Error>();

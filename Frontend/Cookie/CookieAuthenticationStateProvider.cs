@@ -16,7 +16,7 @@ public class CookieAuthenticationStateProvider(
     {
         try
         {
-            var response = await _httpClient.GetAsync("api/Auth/currentUserInfo");
+            var response = await _httpClient.GetAsync("api/authenticate/currentUserInfo");
             if (!response.IsSuccessStatusCode)
             {
                 logger.Log(LogLevel.Debug, $"Auth endpoint returned {(int)response.StatusCode}");

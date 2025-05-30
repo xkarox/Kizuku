@@ -40,4 +40,8 @@
       <Reference Include="Microsoft.Extensions.Logging.Configuration" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="Util\" />
+    </ItemGroup>
+
 </Project>

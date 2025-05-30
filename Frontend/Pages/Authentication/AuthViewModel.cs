@@ -62,7 +62,7 @@ public class AuthViewModel
         state.ErrorMessage = string.Empty;
         state.RegistrationErrorMessage = string.Empty;
         
-        if (IsUsernameValid(state.Username))
+        if (!IsUsernameValid(state.Username))
         {
             state.ErrorMessage = "Username must be at least 3 characters long.";
             state.IsProcessing = false;
@@ -83,7 +83,7 @@ public class AuthViewModel
             return;
         }
         
-        if (IsPasswordValid(state.Password))
+        if (!IsPasswordValid(state.Password))
         {
             state.RegistrationErrorMessage = "Password does not meet requirements.";
             state.IsProcessing = false;

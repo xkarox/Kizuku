@@ -25,7 +25,7 @@ public class AuthenticationServiceUi(
         try
         {
             var response =
-                await _httpClient.PostAsJsonAsync("api/Auth/login",
+                await _httpClient.PostAsJsonAsync("api/authenticate/login",
                     loginRequest);
             if (!response.IsSuccessStatusCode)
             {
@@ -58,7 +58,7 @@ public class AuthenticationServiceUi(
     {
         try
         {
-            var response = await _httpClient.PostAsync("api/Auth/logout", null);
+            var response = await _httpClient.PostAsync("api/authenticate/logout", null);
             if (response.IsSuccessStatusCode)
             {
                 logger.Log(LogLevel.Debug, "Logout successful");
@@ -82,7 +82,7 @@ public class AuthenticationServiceUi(
         try
         {
             var response =
-                await _httpClient.PostAsJsonAsync("api/Auth/register",
+                await _httpClient.PostAsJsonAsync("api/authenticate/register",
                     registrationRequest);
             if (!response.IsSuccessStatusCode)
             {
