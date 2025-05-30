@@ -1,8 +1,8 @@
 @page "/Modules"
-@using Frontend.Components.Module
 @using Frontend.ViewModels
+@using Frontend.Pages.StudyManagement.Components
 @inject NavigationManager NavigationManager
-@inject StudyManagementViewModel ViewModel
+@inherits Blazing.Mvvm.Components.MvvmComponentBase<StudyManagementViewModel>
 
 <Animate Type="AnimationType.SlideFade" Duration="0.3s"
          FromY="50px" ToY="0" Ease="EasingType.Ease_Out" Iteration="1" >
@@ -17,7 +17,7 @@
                 </div>
                 <div>
                     <Button Type="ButtonType.Outline" Icon="add" Style="margin: 1rem;"
-                            OnClick="() => { }" Size="ButtonSize.Large"></Button>
+                            OnClick="ViewModel.AddModuleButtonHandler" Size="ButtonSize.Large"></Button>
                 </div>
             </div>
         </Animate>
@@ -26,7 +26,10 @@
     </div>
 </Animate>
 
-<Drawer Show="@ViewModel.ShowCreateNewModule" OnClose="() => ViewModel.ShowCreateNewModule = false">
+<Drawer Show="@ViewModel.ShowCreateNewModule" OnClose="() => ViewModel.ShowCreateNewModule = false" >
+    <div style="min-width: 40rem; max-width: 40rem">
+        <CreateModule></CreateModule>
+    </div>
 </Drawer>
 
 @code {
@@ -37,8 +40,17 @@
 
     public override Task SetParametersAsync(ParameterView parameters)
     {
-        _ = ViewModel.FetchModules();
         return base.SetParametersAsync(parameters);
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        
+        if (firstRender)
+        {
+            await ViewModel.FetchModules();
+        }
+         await base.OnAfterRenderAsync(firstRender);
     }
 
 }
