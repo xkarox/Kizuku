@@ -1,40 +1,36 @@
 @using Frontend.ViewModels
-@inject StudyManagementViewModel ViewModel
+
 
 <section class="flex-col">
     <h2>Create Module</h2>
     <div style="justify-content: space-evenly" class="flex-col">
-        <CascadingValue Value="@errors">
+        <CascadingValue Value="@ViewModel.CreateModuleErrors">
             <div class="flex-col">
-                <Input Label="Name" Info="This is your new modules name" Type="text" TItem="string" Placeholder="Very important university class.." Value="@_moduleName" ValueChanged="x => _moduleName = x"
-                       Error="Name" style="min-width: 40rem"/>
+                <Input Label="Name" Info="This is your new modules name" 
+                       Type="text" TItem="string" 
+                       Placeholder="Very important university class.." 
+                       Value="@ViewModel.NewModuleName"
+                       ValueChanged="x => ViewModel.NewModuleName = x"
+                       Error="Name" 
+                       style="min-width: 40rem"/>
             </div>
             <div class="flex-col">
-                <Input Label="Description" Info="Add a description so you dont forget the purpose!" Type="text" TItem="string" Placeholder="... or just a random interest? " Value="@_moduleDescription" ValueChanged="x => _moduleDescription = x"
-                       Error="Description" style="min-width: 40rem"/>
+                <Input Label="Description" 
+                       Info="Add a description so you dont forget the purpose!" 
+                       Type="text" TItem="string" 
+                       Placeholder="... or just a random interest? " 
+                       Value="@ViewModel.NewModuleDescription" 
+                       ValueChanged="x => ViewModel.NewModuleDescription = x"
+                       Error="Description" 
+                       style="min-width: 40rem"/>
             </div>
-            <Button Text="Submit" Width="fit-content" OnClick="OnSubmit"/>
+            <Button Text="Submit" Width="fit-content" OnClick="ViewModel.CreateNewModuleCommand.Execute"/>
         </CascadingValue>
     </div>
 </section>
+@code{
 
-@code {
-     private string? _moduleName;
-     private string? _moduleDescription;
-     private bool _loading = false;
-     public Dictionary<string, string>? errors;
+    [CascadingParameter(Name = "ViewModel")]
+    public required StudyManagementViewModel ViewModel { get; set; }
 
-     async Task OnSubmit()
-     {
-         errors = [];
-         if (string.IsNullOrWhiteSpace(_moduleName) || _moduleName?.Length < 2) { errors.TryAdd("Name", "Module name must be at least 2 characters."); }
-
-         if (errors.Count > 0)
-         {
-             return;
-         }
-         var result = await ViewModel.CreateNewModule(_moduleName, _moduleDescription);
-         if(!result)
-             errors.TryAdd("description", "Failed to create module - server error");
-     }
 }

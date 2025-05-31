@@ -1,4 +1,6 @@
 using Blazing.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 using Core.Entities;
 using Core.Requests;
 using Frontend.Services.Interfaces;
@@ -6,12 +8,21 @@ using Microsoft.AspNetCore.Components;
 
 namespace Frontend.Pages.StudyManagement;
 
-public class StudyManagementViewModel
+public partial class StudyManagementViewModel
     (IStudyManagementServiceUI studyManagementService) : ViewModelBase
 {
-    public IEnumerable<Module> Modules { get; set; } = Array.Empty<Module>();
-    public bool ShowCreateNewModule { get; set; } = false;
+    [ObservableProperty]
+    public IEnumerable<Module> _modules = Array.Empty<Module>();
+    [ObservableProperty]
+    public bool _showCreateNewModule = false;
+    [ObservableProperty]
+    public string _newModuleName  = string.Empty;
+    [ObservableProperty]
+    public string _newModuleDescription  = string.Empty;
+    [ObservableProperty]
+    public Dictionary<string, string>? _createModuleErrors;
     
+    [RelayCommand]
     public async Task FetchModules()
     {
         var result = await studyManagementService.GetModules();
@@ -22,29 +33,39 @@ public class StudyManagementViewModel
 
         Modules = result!.Value! ?? Array.Empty<Module>();
     }
-
+    
+    [RelayCommand]
     public void AddModuleButtonHandler()
     {
         ShowCreateNewModule = true;
     }
-
-    public async Task<bool> CreateNewModule(string title, string description)
+    
+    [RelayCommand]
+    public async Task CreateNewModule()
     {
+        CreateModuleErrors = [];
+        if (string.IsNullOrWhiteSpace(NewModuleName) || NewModuleName.Length < 2) { _createModuleErrors.TryAdd("Name", "Module name must be at least 2 characters."); }
+        if (CreateModuleErrors.Count > 0)
+        {
+            return;
+        }
+            
         var request = new CreateModuleRequest()
         {
-            Name = title,
-            Description = description,
+            Name = NewModuleName,
+            Description = NewModuleDescription,
         };
         var result = await studyManagementService.CreateModule(request);
         if (result.IsError)
         {
             Console.WriteLine("failed to create new module");
-            return false;
+            CreateModuleErrors.TryAdd("description", "Failed to create module - server error");
+            return;
         }
-        
-        await FetchModules();
+        _ = FetchModules();
+        NewModuleName = string.Empty;
+        NewModuleDescription = string.Empty;
         ShowCreateNewModule = false;
-        return true;
     }
     
 }

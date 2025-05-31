@@ -3,12 +3,12 @@
 <div class="module-overview-item center-hv" style="margin: @Margin">
     <Card>
         <CardContent>
-            <div class="progress-bar" style="width: @_percent;"></div>
+            <div class="progress-bar" style="width: @(_percent ?? "0%");"></div>
                 <div class="content center-hv flex-row">
                     <Text Content="@FormatNameToMaxLength21(Module.Name)" Weight="FontWeights.W500" SizeInRem="1"></Text>
                     <Separator Vertical></Separator>
                     <div class="center-h" style="min-width: 3rem; max-width: 3rem">
-                        <Text Content="@_percent" Weight="FontWeights.W300"
+                        <Text Content="@(_percent ?? "0%")" Weight="FontWeights.W300"
                               SizeInRem="1"></Text>
                     </div>
                     <Separator Vertical></Separator>
@@ -22,16 +22,21 @@
 @code {
     [Parameter] public Module Module { get; set; }
     [Parameter] public string Margin { get; set; } = "2rem";
-    private Random _random;
-    private string _percent;
+    private Random? _random;
+    private string? _percent;
     
     public override Task SetParametersAsync(ParameterView parameters)
     {
-        _random = new Random();
-        _percent = @_random.NextDouble().ToString("P1");
+        _random ??= new Random();
+        _percent ??= _random.NextDouble().ToString("P1");
         return base.SetParametersAsync(parameters);
     }
-    
+
+    protected override Task OnAfterRenderAsync(bool firstRender)
+    {
+        return base.OnAfterRenderAsync(firstRender);
+    }
+
 
     private string FormatNameToMaxLength21(string name)
     {
