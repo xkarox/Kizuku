@@ -1,35 +1,44 @@
 @using System.Drawing
 @using Core.Entities
 <div class="module-overview-item center-hv" style="margin: @Margin">
-    <Card>
-        <CardContent>
-            <div class="flex-col space-between">
+    @if (!Dummy)
+    {
+        <Card>
+            <CardContent>
+                <div class="flex-col space-between">
                 
-                <div class="module-overview-item-content center-hv flex-row">
-                    <Text Content="@FormatNameToMaxLength21(Module.Name)" Weight="FontWeights.W500" SizeInRem="1"></Text>
-                    <Separator Vertical></Separator>
-                    <div class="center-h flex-row">
-                        <Text Content="@(_percent + "%")" Weight="FontWeights.W300"
-                              SizeInRem="1"></Text>
+                    <div class="module-overview-item-content center-hv flex-row">
+                        <Text Content="@FormatNameToMaxLength21(Module.Name)" Weight="FontWeights.W500" SizeInRem="1"></Text>
+                        <Separator Vertical></Separator>
+                        <div class="center-h flex-row">
+                            <Text Content="@(_percent + "%")" Weight="FontWeights.W300"
+                                  SizeInRem="1"></Text>
+                        </div>
+                        <Separator Vertical></Separator>
+                        <div class="center-h flex-row" id="module-item-buttons">
+                            <Button Type="ButtonType.Icon" Icon="keyboard_arrow_right" Size="ButtonSize.Regular" class="module-item-button"
+                                    OnClick="@(() => ViewModel.SelectModuleButtonHandlerCommand.Execute(Module))"></Button>
+                            <Button Type="ButtonType.Icon" Icon="delete" Size="ButtonSize.Regular" class="module-item-button"
+                                    OnClick="() => ViewModel.DeleteModuleButtonHandler(Module)"></Button>
+                        </div>
                     </div>
-                    <Separator Vertical></Separator>
-                    <div class="center-h flex-row" id="module-item-buttons">
-                        <Button Type="ButtonType.Icon" Icon="keyboard_arrow_right" Size="ButtonSize.Regular" class="module-item-button"></Button>
-                        <Button Type="ButtonType.Icon" Icon="delete" Size="ButtonSize.Regular" class="module-item-button"></Button>
-                    </div>
-                </div>
                     
-                @* <div class="progress-bar-module-overview-item" style="width: @(_percent ?? "0%")"></div> *@
-                <div class="progress-bar-module-overview-item">
-                    <Progress Percent="_percent ?? 0" ShowLabel="@false"></Progress>
+                    @* <div class="progress-bar-module-overview-item" style="width: @(_percent ?? "0%")"></div> *@
+                    <div class="progress-bar-module-overview-item">
+                        <Progress Percent="_percent ?? 0" ShowLabel="@false"></Progress>
+                    </div>
                 </div>
-            </div>
-        </CardContent>
-    </Card>
+            </CardContent>
+        </Card>
+    }
 </div>
 @code { 
-    [Parameter] public Module Module { get; set; }
+    [CascadingParameter(Name = "ViewModel")]
+    public required StudyManagementViewModel ViewModel { get; set; }
+    
+    [Parameter] public required Module Module { get; set; }
     [Parameter] public string Margin { get; set; } = "1rem";
+    [Parameter] public bool Dummy { get; set; } = false;
     private Random? _random;
     private int? _percent;  
     

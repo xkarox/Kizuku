@@ -1,8 +1,10 @@
 using Blazing.Mvvm;
+using Core.Entities;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Frontend;
 using Frontend.Cookie;
+using Frontend.Pages.StudyManagement.Pages.ModuleDetails;
 using Frontend.Services;
 using Frontend.Services.Interfaces;
 using Frontend.StateContainers;
@@ -24,8 +26,10 @@ builder.Services.AddScoped<AuthComponentStateContainer>();
 // add ui stuff 
 builder.Services.AddSysinfocus(jsCssFromCDN: false);
 var vmAssembly = typeof(AuthViewModel).Assembly;
+var vmAssembly2 = typeof(ModuleDetailsViewModel).Assembly;
 builder.Services.AddMvvm(options => {
     options.RegisterViewModelsFromAssembly(vmAssembly);
+    options.RegisterViewModelsFromAssembly(vmAssembly2);
 });
 
 // add auth stuff 

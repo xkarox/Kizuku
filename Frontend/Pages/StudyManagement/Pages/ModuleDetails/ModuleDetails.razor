@@ -1,0 +1,51 @@
+@page "/studyManagement/{moduleId}"
+@inherits Blazing.Mvvm.Components.MvvmComponentBase<ModuleDetailsViewModel>
+
+@inject NavigationManager NavigationManager
+
+    <Animate Type="AnimationType.SlideFade" Duration="0.3s"
+        FromY="50px" ToY="0" Ease="EasingType.Ease_Out" Iteration="1" >
+        <div class="flex-col" style="max-width: 70vw; min-width: 70vw;">
+            <Animate Type="AnimationType.SlideFade" Duration="0.3s"
+                FromY="50px" ToY="0" Ease="EasingType.Ease_Out" Iteration="1" >
+                <div class="flex-row center-v" style="justify-content: space-between !important;min-width: 70vw; max-width: 70vw">
+                    <div class="flex-row center-v">
+                        <Button Type="ButtonType.Outline" Icon="arrow_back" Style="margin: 1rem"
+                                OnClick="@(() => NavigationManager.NavigateTo("/studyManagement"))" Size="ButtonSize.Large"></Button>
+                        <div style="font-size: 3rem; color: @Colors.Primary;">
+                            @ViewModel.Module?.Name
+                        </div>
+                    </div>
+                    <div>
+                        <Button Type="ButtonType.Outline" Icon="update" Style="margin: 1rem;"
+                                Size="ButtonSize.Large"></Button>
+                    </div>
+                </div>
+            </Animate>
+            <Separator Style="margin-bottom: 2rem"></Separator>
+            <div class="flex-row center-h scrollable" style="margin-bottom: 2rem; padding-top: 2rem"></div>
+        </div>
+    </Animate>
+@code {
+    [Parameter] public string moduleId { get; set; } = null!;
+    protected override Task OnParametersSetAsync()
+    {
+        if (!string.IsNullOrEmpty(moduleId) && Guid.TryParse(moduleId, out var guid))
+        {
+            ViewModel.FetchModuleCommand.Execute(guid);
+        }
+        return base.OnParametersSetAsync();
+    }
+    
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+    }
+    
+    protected override Task OnAfterRenderAsync(bool firstRender)
+    {
+        return base.OnAfterRenderAsync(firstRender);
+    }
+
+
+}

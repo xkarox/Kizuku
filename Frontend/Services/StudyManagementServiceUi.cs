@@ -91,18 +91,11 @@ public class StudyManagementServiceUi(
         var response = await _httpClient.DeleteAsync($"api/study_management/{id}");
         if (!response.IsSuccessStatusCode)
         {
-            var error = await response.Content.ReadFromJsonAsync<Error>();
-            logger.Log(LogLevel.Debug, error != null ? error.Message : "Unknown error");
-            return Result<Guid>.Failure(error ?? new Error("No error provided"));
-        }
-        var updateModuleResponse = await response.Content.ReadFromJsonAsync<UpdateModuleResponse>();
-        if (updateModuleResponse == null)
-        {
             logger.Log(LogLevel.Debug, $"Module deletion failed for module: {id}");
             return Result<Guid>.Failure(
                 new Error($"Module deletion failed for module: {id}"));
         }
-        logger.Log(LogLevel.Debug, updateModuleResponse.ToString());
-        return Result<Guid>.Success(updateModuleResponse.ModuleId);
+        logger.Log(LogLevel.Debug, $"Deleted Module: {id}");
+        return Result<Guid>.Success(id);
     }
 }

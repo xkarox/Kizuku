@@ -1,40 +1,50 @@
-@page "/Modules"
+@page "/studyManagement"
 @using Frontend.ViewModels
 @using Frontend.Pages.StudyManagement.Components
 @inject NavigationManager NavigationManager
 @inherits Blazing.Mvvm.Components.MvvmComponentBase<StudyManagementViewModel>
-
-<Animate Type="AnimationType.SlideFade" Duration="0.3s"
-         FromY="50px" ToY="0" Ease="EasingType.Ease_Out" Iteration="1" >
-    <div class="flex-col" style="max-width: 70vw; min-width: 70vw;">
-        <Animate Type="AnimationType.SlideFade" Duration="0.3s"
-                 FromY="50px" ToY="0" Ease="EasingType.Ease_Out" Iteration="1" >
-            <div class="flex-row center-v" style="justify-content: space-between !important;min-width: 70vw; max-width: 70vw">
-                <div class="flex-row center-v">
-                    <Button Type="ButtonType.Outline" Icon="arrow_back" Style="margin: 1rem"
-                            OnClick="NavigateToIndex" Size="ButtonSize.Large"></Button>
-                    <Text SizeInRem="3" Content="Modules" GradientColors="@Colors.PrimarySecondary" ShowGradient></Text>
-                </div>
-                <div>
-                    <Button Type="ButtonType.Outline" Icon="add" Style="margin: 1rem;"
-                            OnClick="ViewModel.AddModuleButtonHandlerCommand.Execute" Size="ButtonSize.Large"></Button>
-                </div>
-            </div>
-        </Animate>
-        <Separator Style="margin-bottom: 2rem"></Separator>
-        <div class="flex-row center-h scrollable" style="margin-bottom: 2rem; padding-top: 2rem">
-            @foreach (var module in ViewModel.Modules)
-            {
-
-                <ModuleOverviewItem Module="@module"></ModuleOverviewItem>
-            }
-        </div>
-    </div>
-</Animate>
 <CascadingValue Value="@ViewModel" Name="ViewModel">
+    <Animate Type="AnimationType.SlideFade" Duration="0.3s"
+             FromY="50px" ToY="0" Ease="EasingType.Ease_Out" Iteration="1" >
+        <div class="flex-col" style="max-width: 67vw; min-width: 67vw;">
+            <Animate Type="AnimationType.SlideFade" Duration="0.3s"
+                     FromY="50px" ToY="0" Ease="EasingType.Ease_Out" Iteration="1" >
+                <div class="flex-row center-v" style="justify-content: space-between !important;min-width: 67vw; max-width: 67vw">
+                    <div class="flex-row center-v">
+                        <Button Type="ButtonType.Outline" Icon="arrow_back" Style="margin: 1rem"
+                                OnClick="NavigateToIndex" Size="ButtonSize.Large"></Button>
+                        <Text SizeInRem="3" Content="Modules" Color="@Colors.Primary"></Text>
+                    </div>
+                    <div>
+                        <Button Type="ButtonType.Outline" Icon="add" Style="margin: 1rem;"
+                                OnClick="ViewModel.AddModuleButtonHandlerCommand.Execute" Size="ButtonSize.Large"></Button>
+                    </div>
+                </div>
+            </Animate>
+            <Separator Style="margin-bottom: 2rem"></Separator>
+            <Animate Type="AnimationType.SlideFade" Duration="0.3s"
+                     FromY="50px" ToY="0" Ease="EasingType.Ease_Out" Iteration="1" >
+                <div class="scrollable" style="margin-bottom: 2rem; padding-top: 2rem; justify-content: start">
+                    @foreach (var module in ViewModel.Modules)
+                    {
+
+                        <ModuleOverviewItem Module="@module"></ModuleOverviewItem>
+                    }
+                    <ModuleOverviewItem Module="@null" Dummy="@true"></ModuleOverviewItem>
+                </div>
+            </Animate>
+        </div>
+    </Animate>
+
     <Drawer Show="@ViewModel.ShowCreateNewModule">
         <div style="min-width: 40rem; max-width: 40rem">
             <CreateModule></CreateModule>
+        </div>
+    </Drawer>
+    
+    <Drawer Show="@ViewModel.ShowDeleteModule" OnClose="() => { ViewModel.ShowDeleteModule = false ; }">
+        <div style="min-width: 40rem; max-width: 40rem">
+            <DeleteModule></DeleteModule>
         </div>
     </Drawer>
 </CascadingValue>

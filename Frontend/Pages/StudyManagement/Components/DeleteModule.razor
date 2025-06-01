@@ -1,0 +1,24 @@
+@using Frontend.ViewModels
+
+
+<section class="flex-col">
+    <Text Weight="FontWeights.W300" SizeInRem="3" Color="@Colors.Primary">
+        Delete @ViewModel.ModuleToDelete?.Name?
+    </Text>
+    <Text Color="red" SizeInRem="0.5">
+        @foreach(var err in ViewModel.DeleteModuleErrors)
+            err.Value.ToString();<br>
+    </Text>
+    <div style="justify-content: space-evenly" class="flex-row">
+        <Button Type="ButtonType.Outline" Icon="check" OnClick="ViewModel.DeleteModuleCommand.ExecuteAsync"
+                Style="margin: 0.5rem" Size="ButtonSize.Large"></Button>
+        <Button Type="ButtonType.Outline" Icon="close" OnClick="() => { ViewModel.ShowDeleteModule = false ; }"
+                Style="margin: 0.5rem" Size="ButtonSize.Large"></Button>
+    </div>
+</section>
+@code{
+
+    [CascadingParameter(Name = "ViewModel")]
+    public required StudyManagementViewModel ViewModel { get; set; }
+
+}
