@@ -8,16 +8,11 @@
 }
 
 .dark{
-    /*background: #000 !important;*/
-    background: #4c1f78 !important;
-    background: radial-gradient(circle at center bottom, rgba(70, 20, 82, 1) 5%, rgba(9, 9, 11, 1) 60%) !important;
+    scrollbar-color: white transparent;
+    background: radial-gradient(circle at center bottom,rgba(137, 55, 219, 1) 1%, rgba(93, 39, 138, 1) 25%, rgba(9, 9, 11, 1) 55%) !important;
 }
 
 .light {
-    background: #c48ad1 !important;
-    background: radial-gradient(circle at center bottom, rgba(196, 138, 209, 1) 5%, rgba(252, 251, 244, 1) 60%) !important;
+    scrollbar-color: black transparent;
+    background: radial-gradient(circle at center bottom,rgba(137, 55, 219, 1) 1%, rgba(189, 149, 222, 1) 25%, rgba(252, 251, 244, 1) 55%) !important;
 }
-
-/*.dark .sbc-navigation-menu {*/
-/*    background: #000 !important;*/
-/*}*/

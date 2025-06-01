@@ -1,3 +1,14 @@
+
+body {
+    margin: 1rem !important;
+    padding: 0;
+    overflow: hidden;
+    scrollbar-width: thin;
+    max-height: 100vh !important;
+    scroll-behavior: smooth;
+    min-width: 800px;
+}
+
 .center-hv {
     display: flex;
     justify-content: center;
@@ -15,6 +26,20 @@
     align-items: center;
 }
 
+.scrollable {
+    overflow-y: auto;
+    min-height: 80vh;
+    height: 80vh;
+    mask-image: linear-gradient(
+            to bottom,
+            transparent 3%,
+            black 7%, 
+            black 85%, 
+            transparent 100%
+    );
+    mask-position: center;
+    mask-size: cover;
+}
 
 .flex-row {
     display: flex;
@@ -28,38 +53,44 @@
     flex-wrap: wrap;
 }
 
+.space-between {
+    justify-content: space-between;
+}
+
 .kizuku-button {
-    background: linear-gradient(to bottom, #8937DB, #BC34D9);
+    /*background: linear-gradient(to bottom, #8937DB, #BC34D9);*/
+    background: #8937DB !important;
     margin: 0.5rem;
     color: white !important;
 }
 
 /*Can be put into seperate css file*/
 .module-overview-item {
-    min-width: 25rem;
-    max-width: 25rem;
-    height: 6rem;
+    min-width: 65vw;
+    max-width: 65vw;
+    height: 10rem;
+    min-height: 10rem;
     position: relative;
 }
+.module-overview-item .sbc-card-content {
+    display: block !important;
+    min-height: 10rem;
+} 
 
-.progress-bar {
-    position: absolute;
-    top: 0;
-    left: 0;
-    height: 100%;
-    width: 60%;
-    background: linear-gradient(105deg, #8937DB 0%, #BC34D9 20%, rgba(188, 52, 217, 0.5) 30%, rgba(188, 52, 217, 0.2) 50%, transparent 100%); /* Color of the progress bar */
-    transition: width 0.3s ease;
-    clip-path: polygon(0 0, 100% 0, calc(100% - 2rem) 100%, 0% 100%);
+.progress-bar-module-overview-item {
+    margin-top: 1rem;
 }
 
-.content {
-    position: relative;
-    display: flex;
-    justify-content: space-evenly;
-    z-index: 1;
-    color: white;
-    text-align: center;
-    font-weight: bold;
-    width: 100%;
+.module-overview-item-content {
+    display: grid;
+    grid-template-columns: 32% auto 32%  auto 32%;
+    grid-template-rows: 5rem;
+}
+
+.module-overview-item-content #module-item-buttons {
+    justify-self: flex-end;
+}
+
+.module-item-button {
+    margin: 0 1rem 0 1rem;
 }

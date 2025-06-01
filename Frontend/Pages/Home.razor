@@ -1,7 +1,6 @@
 ﻿@page "/"
 @using Frontend.Services.Interfaces
 @using Microsoft.AspNetCore.Components.Authorization
-@inject Initialization init
 
 
 <PageTitle>Kizuku</PageTitle>
@@ -12,7 +11,8 @@
         <Grid Columns="1" Rows="2" ColGap="2rem" Class="home-grid">
             
             <Text Content="Kizuku" SizeInRem="10" Weight="FontWeights.W900"
-                  GradientColors="@Colors.PrimarySecondary" ShowGradient/>
+                  Color="@Colors.Primary"/>
+                  @* GradientColors="@Colors.PrimarySecondary" ShowGradient/> *@
 
             <Separator Style="margin-bottom: 1rem"/>
             <div style="display: flex; align-items: center; justify-content: center">

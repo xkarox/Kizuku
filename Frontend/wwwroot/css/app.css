@@ -1,7 +1,4 @@
-body {
-    margin: 1rem !important;
-    padding: 0;
-}
+
 
 .valid.modified:not([type=checkbox]) {
     outline: 1px solid #26b050;

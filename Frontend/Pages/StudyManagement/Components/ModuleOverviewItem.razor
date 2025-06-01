@@ -3,32 +3,41 @@
 <div class="module-overview-item center-hv" style="margin: @Margin">
     <Card>
         <CardContent>
-            <div class="progress-bar" style="width: @(_percent ?? "0%");"></div>
-                <div class="content center-hv flex-row">
+            <div class="flex-col space-between">
+                
+                <div class="module-overview-item-content center-hv flex-row">
                     <Text Content="@FormatNameToMaxLength21(Module.Name)" Weight="FontWeights.W500" SizeInRem="1"></Text>
                     <Separator Vertical></Separator>
-                    <div class="center-h" style="min-width: 3rem; max-width: 3rem">
-                        <Text Content="@(_percent ?? "0%")" Weight="FontWeights.W300"
+                    <div class="center-h flex-row">
+                        <Text Content="@(_percent + "%")" Weight="FontWeights.W300"
                               SizeInRem="1"></Text>
                     </div>
                     <Separator Vertical></Separator>
-                    <div class="center-h" style="min-width: 2rem; max-width: 2rem">
-                        <Button Type="ButtonType.Icon" Icon="keyboard_arrow_right" Size="ButtonSize.Small"></Button>
+                    <div class="center-h flex-row" id="module-item-buttons">
+                        <Button Type="ButtonType.Icon" Icon="keyboard_arrow_right" Size="ButtonSize.Regular" class="module-item-button"></Button>
+                        <Button Type="ButtonType.Icon" Icon="delete" Size="ButtonSize.Regular" class="module-item-button"></Button>
                     </div>
                 </div>
+                    
+                @* <div class="progress-bar-module-overview-item" style="width: @(_percent ?? "0%")"></div> *@
+                <div class="progress-bar-module-overview-item">
+                    <Progress Percent="_percent ?? 0" ShowLabel="@false"></Progress>
+                </div>
+            </div>
         </CardContent>
     </Card>
 </div>
-@code {
+@code { 
     [Parameter] public Module Module { get; set; }
-    [Parameter] public string Margin { get; set; } = "2rem";
+    [Parameter] public string Margin { get; set; } = "1rem";
     private Random? _random;
-    private string? _percent;
+    private int? _percent;  
+    
     
     public override Task SetParametersAsync(ParameterView parameters)
     {
         _random ??= new Random();
-        _percent ??= _random.NextDouble().ToString("P1");
+        _percent ??= _random.Next(0, 100);//.ToString("P1");
         return base.SetParametersAsync(parameters);
     }
 
