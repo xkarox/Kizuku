@@ -1,0 +1,31 @@
+<section class="flex-col">
+    <h2>Add a Topic to your Module!</h2>
+    <div style="justify-content: space-evenly" class="flex-col">
+        <CascadingValue Value="@ViewModel.AddTopicErrors">
+            <div class="flex-col">
+                <Input Label="Name" Info="This is your Topics name"
+                       Type="text" TItem="string"
+                       Placeholder="Finally understanding the purpose of life.."
+                       Value="@ViewModel.NewTopicName"
+                       ValueChanged="x => ViewModel.NewTopicName = x"
+                       Error="Name"
+                       style="min-width: 40rem"/>
+            </div>
+            <div class="flex-col">
+                <Input Label="Description"
+                       Info="Add a description so you dont forget the purpose!"
+                       Type="text" TItem="string"
+                       Placeholder="... or just a random cs topic? "
+                       Value="@ViewModel.NewTopicDescription"
+                       ValueChanged="x => ViewModel.NewTopicDescription = x"
+                       Error="Description"
+                       style="min-width: 40rem"/>
+            </div>
+            <Button Text="Submit" Width="fit-content" OnClick="ViewModel.AddTopicCommand.Execute"/>
+        </CascadingValue>
+    </div>
+</section>
+@code {
+    [CascadingParameter(Name = "ViewModel")]
+    public required ModuleDetailsViewModel ViewModel { get; set; }
+}

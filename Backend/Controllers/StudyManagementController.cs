@@ -1,4 +1,5 @@
 using Core;
+using Core.Entities;
 using Core.Errors;
 using Core.Requests;
 using Core.Responses;
@@ -32,6 +33,39 @@ public class StudyManagementController(
             return BadRequest(modulesResult.Error);
         }
         return Ok(modulesResult.Value!.ToUserModulesResponse(guid));
+    }
+    
+    [Authorize]
+    [HttpGet]
+    [Route("module/{moduleId}")]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Module))]
+    [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(IError))]
+    public async Task<IActionResult> GetModule([FromRoute] string moduleId)
+    {
+        if (string.IsNullOrEmpty(moduleId))
+            return BadRequest(new Error("No module specified"));
+        var guid = new Guid(moduleId);
+        var modulesResult = await studyManagementService.GetModuleWithTopics(guid);
+        if (modulesResult.IsError)
+        {
+            return BadRequest(modulesResult.Error);
+        }
+        return Ok(modulesResult.Value!);
+    }
+    
+    [Authorize]
+    [HttpPost]
+    [Route("module/addTopic")]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Module))]
+    [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(IError))]
+    public async Task<IActionResult> AddTopic([FromBody] AddTopicToModuleRequest request)
+    {
+        var modulesResult = await studyManagementService.AddTopicToModule(request);
+        if (modulesResult.IsError)
+        {
+            return StatusCode(StatusCodes.Status403Forbidden, modulesResult.Error);
+        }
+        return Ok(modulesResult.Value!);
     }
     
     [Authorize]

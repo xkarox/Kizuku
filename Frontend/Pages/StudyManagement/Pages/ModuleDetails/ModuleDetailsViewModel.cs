@@ -2,6 +2,7 @@ using Blazing.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Core.Entities;
+using Core.Requests;
 using Frontend.Services.Interfaces;
 
 namespace Frontend.Pages.StudyManagement.Pages.ModuleDetails;
@@ -10,18 +11,59 @@ public partial class ModuleDetailsViewModel
     (IStudyManagementServiceUI studyManagementService) : ViewModelBase
 {
     [ObservableProperty] private Module? _module = null;
+    [ObservableProperty] private bool _showAddTopic = false;
+    [ObservableProperty] private string _newTopicName = string.Empty;
+    [ObservableProperty] private string? _newTopicDescription = string.Empty;
+    [ObservableProperty] private Dictionary<string, string> _addTopicErrors= new();
 
     [RelayCommand]
     public async Task FetchModule(Guid moduleId)
     {
-        var result = await studyManagementService.GetModules();
+        var result = await studyManagementService.GetModule(moduleId);
         if (result.IsError)
         {
             SetDummyModule();
         }
-        Module = result!.Value!.FirstOrDefault(module => module.Id == moduleId);
+        Module = result!.Value!;
     }
 
+    [RelayCommand]
+    public void AddTopicButtonHandler()
+    {
+        ShowAddTopic = true;
+    }
+    
+    [RelayCommand]
+    public async Task AddTopic()
+    {
+        AddTopicErrors = [];
+        if (string.IsNullOrWhiteSpace(NewTopicName)) { AddTopicErrors.TryAdd("Name", "Name is required"); }
+
+        var request = new AddTopicToModuleRequest()
+        {
+            ModuleId = Module.Id,
+            Topic = new Topic()
+            {
+                Name = NewTopicName,
+                Description = NewTopicDescription,
+                CreatedAt = DateTime.UtcNow,
+                UpdatedAt = DateTime.UtcNow,
+            }
+        };
+        
+        var result = await studyManagementService.AddTopic(request);
+        if (result.IsError)
+        {
+            Console.WriteLine("Failed to add topic");
+            AddTopicErrors.TryAdd("description", "Failed to create module - server error");
+            return;
+        }
+        Module = result!.Value!;
+        NewTopicName = string.Empty;
+        NewTopicDescription = string.Empty;
+        ShowAddTopic = false;
+    }
+    
     private void SetDummyModule()
     {
         Module = new Module()

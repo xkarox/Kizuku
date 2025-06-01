@@ -1,4 +1,6 @@
 using System.Net.Http.Json;
+using System.Text;
+using System.Text.Json;
 using Core;
 using Core.Entities;
 using Core.Errors;
@@ -98,4 +100,60 @@ public class StudyManagementServiceUi(
         logger.Log(LogLevel.Debug, $"Deleted Module: {id}");
         return Result<Guid>.Success(id);
     }
+
+    public async Task<Result<Module>> GetModule(Guid moduleId)
+    {
+        if (moduleId == Guid.Empty || moduleId == null)
+        {
+            return Result<Module>.Failure(new Error("Invalid ModuleId"));
+        }
+        
+        var response = await _httpClient.GetAsync($"api/study_management/module/{moduleId}");
+        if (!response.IsSuccessStatusCode)
+        {
+            logger.Log(LogLevel.Debug, $"Failed to get Module: {moduleId}");
+            return Result<Module>.Failure(
+                new Error($"Failed to get Module: {moduleId}"));
+        }
+        logger.Log(LogLevel.Debug, $"Got Module: {moduleId}");
+        var module = await response.Content.ReadFromJsonAsync<Module>();
+        if (module == null)
+        {
+            logger.Log(LogLevel.Debug, $"Failed to deserialize Module: {moduleId}");
+            return Result<Module>.Failure(
+                new Error($"Failed to deserialize Module: {moduleId}"));
+        }
+        return Result<Module>.Success(module);
+    }
+    
+    public async Task<Result<Module>> AddTopic(AddTopicToModuleRequest addTopicRequest)
+    {
+        if (addTopicRequest == null)
+        {
+            logger.Log(LogLevel.Debug, $"Invalid Request");
+            return Result<Module>.Failure(new Error("Invalid Request"));
+        }
+        var json = JsonSerializer.Serialize(addTopicRequest);
+        var content = new StringContent(json, Encoding.UTF8, "application/json");
+        var response = await _httpClient.PostAsync(
+            $"api/study_management/module/addTopic", 
+            content);
+        if (!response.IsSuccessStatusCode)
+        {
+            logger.Log(LogLevel.Debug, $"Failed to add Topic {addTopicRequest.Topic.Name} to Module: {addTopicRequest.ModuleId}");
+            return Result<Module>.Failure(
+                new Error($"Failed to add Topic {addTopicRequest.Topic.Name} to Module: {addTopicRequest.ModuleId}"));
+        }
+        logger.Log(LogLevel.Debug, $"Topic Added to Module: {addTopicRequest.Topic.Name}");
+        var module = await response.Content.ReadFromJsonAsync<Module>();
+        if (module == null)
+        {
+            logger.Log(LogLevel.Debug, $"Failed to deserialize Module after Add Topic: {addTopicRequest.Topic.Name}");
+            return Result<Module>.Failure(
+                new Error($"Failed to deserialize Module after Add Topic: {addTopicRequest.Topic.Name}"));
+        }
+        return Result<Module>.Success(module);
+    }
 }
+
+https://c.gle/ANiao5qHA0CBnMf5vf4tQySPGaxuY8c1iTErp3tmpnDdkI8maX3lVVAVvszEu02gKVsBVyPCJ_3AISeEmg2P0s2sFFNoWD2Hoy_m03S2NwfyIXXqgVj59RHgvt-1YPnHM3IPNa8jQJvT6VLFJzxeqG5d3qf9GB8n04xHgeC0q7ydKr0rb_03nAhTuLi2jPw0tH7e_vLbhLgz

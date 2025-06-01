@@ -27,6 +27,54 @@ public class StudyManagementService(
         return moduleResult;
     }
 
+    public async Task<Result<Module>> GetModuleWithTopics(Guid moduleId)
+    {
+        try
+        {
+            var query = 
+                    db.Modules.Where(module => module.Id == moduleId)
+                        .Include(module => module.Topics)
+                .AsQueryable();
+            var module = await query.FirstOrDefaultAsync();
+            if (module is null)
+                return Result<Module>.Failure(new DatabaseError("Module not found"));
+            return Result<Module>.Success(module);
+        }
+        catch (ArgumentNullException e)
+        {
+            return Result<Module>.Failure(new DatabaseError(e.Message));
+        }
+    }
+    
+    public async Task<Result<Module>> AddTopicToModule(AddTopicToModuleRequest request)
+    {
+        try
+        {
+            var query = 
+                db.Modules.Where(module => module.Id == request.ModuleId)
+                    .Include(module => module.Topics)
+                    .AsQueryable();
+            var module = await query.FirstOrDefaultAsync();
+            if (module is null)
+                return Result<Module>.Failure(new DatabaseError("Module not found"));
+            
+            module.Topics.Add(request.Topic);
+            
+            await db.SaveChangesAsync();
+            return Result<Module>.Success(module);
+        }
+        catch (ArgumentNullException e)
+        {
+            logger.LogError(e.Message);
+            return Result<Module>.Failure(new DatabaseError(e.Message));
+        }
+        catch (DbUpdateException e)
+        {
+            logger.LogError(e.Message);
+            return Result<Module>.Failure(new DatabaseError(e.Message));
+        }
+    }
+
     public async Task<Result<Module>> CreateUserModule(CreateModuleRequest createModuleRequest, Guid userId)
     {
         var module = createModuleRequest.ToModule(userId);
@@ -62,7 +110,7 @@ public class StudyManagementService(
         return Result.Success();
     }
     
-    public async Task<Result<Module>> Create(Module entity)
+    private async Task<Result<Module>> Create(Module entity)
     {
         if (entity == null)
             return Result<Module>
@@ -79,7 +127,7 @@ public class StudyManagementService(
             return Result<Module>.Failure(new DatabaseError(e.Message));
         }
     }
-    public async Task<Result<IEnumerable<Module>>> GetAllByUserId(Guid userId)
+    private async Task<Result<IEnumerable<Module>>> GetAllByUserId(Guid userId)
     {
         try
         {
@@ -94,7 +142,7 @@ public class StudyManagementService(
         }
     }
     
-    public async Task<Result> Update(Module entity)
+    private async Task<Result> Update(Module entity)
     { 
         var entityToUpdate = await db.Modules.Where(e => e.Id == entity.Id).FirstOrDefaultAsync(); 
 
@@ -120,7 +168,7 @@ public class StudyManagementService(
         }
     }
     
-    public async Task<Result> Delete(Module entity)
+    private async Task<Result> Delete(Module entity)
     {
         var entityToDelete = await db.Modules.Where(e => e.Id == entity.Id).FirstOrDefaultAsync(); 
 

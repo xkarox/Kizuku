@@ -83,7 +83,8 @@ public partial class StudyManagementViewModel
     public async Task CreateNewModule()
     {
         CreateModuleErrors = [];
-        if (string.IsNullOrWhiteSpace(NewModuleName) || NewModuleName.Length < 2) { _createModuleErrors.TryAdd("Name", "Module name must be at least 2 characters."); }
+        if (string.IsNullOrWhiteSpace(NewModuleName) || NewModuleName.Length < 2) 
+        { CreateModuleErrors.TryAdd("Name", "Module name must be at least 2 characters."); }
         if (CreateModuleErrors.Count > 0)
         {
             return;

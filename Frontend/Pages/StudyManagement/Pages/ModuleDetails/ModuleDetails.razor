@@ -1,24 +1,28 @@
 @page "/studyManagement/{moduleId}"
+@using Frontend.Pages.StudyManagement.Pages.ModuleDetails.Components
 @inherits Blazing.Mvvm.Components.MvvmComponentBase<ModuleDetailsViewModel>
 
 @inject NavigationManager NavigationManager
-
+<CascadingValue Value="@ViewModel" Name="ViewModel">
     <Animate Type="AnimationType.SlideFade" Duration="0.3s"
-        FromY="50px" ToY="0" Ease="EasingType.Ease_Out" Iteration="1" >
+             FromY="50px" ToY="0" Ease="EasingType.Ease_Out" Iteration="1" >
         <div class="flex-col" style="max-width: 70vw; min-width: 70vw;">
             <Animate Type="AnimationType.SlideFade" Duration="0.3s"
-                FromY="50px" ToY="0" Ease="EasingType.Ease_Out" Iteration="1" >
+                     FromY="50px" ToY="0" Ease="EasingType.Ease_Out" Iteration="1" >
                 <div class="flex-row center-v" style="justify-content: space-between !important;min-width: 70vw; max-width: 70vw">
                     <div class="flex-row center-v">
                         <Button Type="ButtonType.Outline" Icon="arrow_back" Style="margin: 1rem"
-                                OnClick="@(() => NavigationManager.NavigateTo("/studyManagement"))" Size="ButtonSize.Large"></Button>
+                                OnClick="@(() => 
+                                             NavigationManager.NavigateTo("/studyManagement"))" 
+                                Size="ButtonSize.Large"></Button>
                         <div style="font-size: 3rem; color: @Colors.Primary;">
                             @ViewModel.Module?.Name
                         </div>
                     </div>
                     <div>
-                        <Button Type="ButtonType.Outline" Icon="update" Style="margin: 1rem;"
-                                Size="ButtonSize.Large"></Button>
+                        <Button Type="ButtonType.Outline" Icon="add" Style="margin: 1rem;"
+                                Size="ButtonSize.Large"
+                                OnClick="ViewModel.AddTopicButtonHandlerCommand.Execute"></Button>
                     </div>
                 </div>
             </Animate>
@@ -26,6 +30,11 @@
             <div class="flex-row center-h scrollable" style="margin-bottom: 2rem; padding-top: 2rem"></div>
         </div>
     </Animate>
+
+    <Drawer Show="ViewModel.ShowAddTopic">
+        <AddTopic></AddTopic>   
+    </Drawer>
+</CascadingValue>
 @code {
     [Parameter] public string moduleId { get; set; } = null!;
     protected override Task OnParametersSetAsync()
