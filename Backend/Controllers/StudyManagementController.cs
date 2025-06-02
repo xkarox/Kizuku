@@ -60,11 +60,15 @@ public class StudyManagementController(
     [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(IError))]
     public async Task<IActionResult> AddTopic([FromBody] AddTopicToModuleRequest request)
     {
+        Console.WriteLine("Add topic");
         var modulesResult = await studyManagementService.AddTopicToModule(request);
         if (modulesResult.IsError)
         {
-            return StatusCode(StatusCodes.Status403Forbidden, modulesResult.Error);
+            
+            Console.WriteLine("Failed to add topic");
+            return BadRequest(modulesResult.Error);
         }
+        Console.WriteLine("Success");
         return Ok(modulesResult.Value!);
     }
     

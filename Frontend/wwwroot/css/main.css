@@ -94,3 +94,15 @@ body {
 .module-item-button {
     margin: 0 1rem 0 1rem;
 }
+
+   
+.topic-item
+{
+    min-width: 10rem;
+    min-height: 10rem;
+    max-width: 10rem;
+    max-height: 10rem;
+    border: 1px solid deeppink; 
+    border-radius: 20px; 
+    margin: 1rem 1rem 1rem 1rem
+}

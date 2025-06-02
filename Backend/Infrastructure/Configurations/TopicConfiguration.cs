@@ -12,5 +12,11 @@ public class TopicConfiguration : IEntityTypeConfiguration<Topic>
             .WithOne(t => t.ParentTopic)
             .HasForeignKey(t => t.ParentTopicId)
             .OnDelete(DeleteBehavior.Cascade);
+        
+        builder.HasOne(t => t.Status)
+            .WithMany()
+            .HasForeignKey(t => t.StatusId)
+            .OnDelete(DeleteBehavior.SetNull)
+            .IsRequired(false);
     }
 }

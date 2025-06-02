@@ -30,7 +30,7 @@ public partial class ModuleDetailsViewModel
     [RelayCommand]
     public void AddTopicButtonHandler()
     {
-        ShowAddTopic = true;
+        ShowAddTopic = true; 
     }
     
     [RelayCommand]
@@ -38,17 +38,14 @@ public partial class ModuleDetailsViewModel
     {
         AddTopicErrors = [];
         if (string.IsNullOrWhiteSpace(NewTopicName)) { AddTopicErrors.TryAdd("Name", "Name is required"); }
-
+        if (Module == null) { AddTopicErrors.TryAdd("Module", "No module selected"); }
+        if (AddTopicErrors.Count != 0) return;
+        
         var request = new AddTopicToModuleRequest()
         {
-            ModuleId = Module.Id,
-            Topic = new Topic()
-            {
-                Name = NewTopicName,
-                Description = NewTopicDescription,
-                CreatedAt = DateTime.UtcNow,
-                UpdatedAt = DateTime.UtcNow,
-            }
+            ModuleId = Module!.Id,
+            TopicName = NewTopicName,
+            TopicDescription = NewTopicDescription ?? string.Empty,
         };
         
         var result = await studyManagementService.AddTopic(request);

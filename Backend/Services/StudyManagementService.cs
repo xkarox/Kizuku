@@ -58,7 +58,13 @@ public class StudyManagementService(
             if (module is null)
                 return Result<Module>.Failure(new DatabaseError("Module not found"));
             
-            module.Topics.Add(request.Topic);
+            module.Topics.Add(new Topic
+            {
+                Name = request.TopicName,
+                Description = request.TopicDescription,
+                CreatedAt = DateTime.UtcNow,
+                UpdatedAt = DateTime.UtcNow
+            });
             
             await db.SaveChangesAsync();
             return Result<Module>.Success(module);

@@ -22,20 +22,23 @@
                 </div>
             </Animate>
             <Separator Style="margin-bottom: 2rem"></Separator>
-            <Animate Type="AnimationType.SlideFade" Duration="0.3s"
-                     FromY="50px" ToY="0" Ease="EasingType.Ease_Out" Iteration="1" >
-                <div class="scrollable" style="margin-bottom: 2rem; padding-top: 2rem; justify-content: start">
-                    @foreach (var module in ViewModel.Modules)
+                <div class="scrollable" style="margin-bottom: 2rem; padding-top: 2rem;">
+                    @foreach (var (module, index) in ViewModel.Modules.Select((m, i) => (m, i)))
                     {
-
-                        <ModuleOverviewItem Module="@module"></ModuleOverviewItem>
+                        <Animate Type="AnimationType.SlideFade" Duration="0.3s"
+                                 FromY="50px" ToY="0"
+                                 FromOpacity="0" ToOpacity="1"
+                                 Delay="@($"{index * 0.1}s")"
+                                 Ease="EasingType.Ease_In_Out" Iteration="1" Style="opacity: 0">
+                            <ModuleOverviewItem Module="@module"></ModuleOverviewItem>
+                        </Animate>
                     }
+                     
                     <ModuleOverviewItem Module="@null" Dummy="@true"></ModuleOverviewItem>
                 </div>
-            </Animate>
         </div>
     </Animate>
-
+    
     <Drawer Show="@ViewModel.ShowCreateNewModule">
         <div style="min-width: 40rem; max-width: 40rem">
             <CreateModule></CreateModule>

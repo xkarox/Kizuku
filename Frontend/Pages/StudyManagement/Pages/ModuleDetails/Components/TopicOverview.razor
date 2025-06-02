@@ -1,0 +1,66 @@
+@using Core.Entities
+
+<div style="width: inherit; max-width: inherit; flex-wrap: wrap; gap: 1rem" class="flex-row center-h">
+    <Card Style="width: inherit; max-width: inherit; min-width: 67vw; opacity: 0;">
+        <CardHeader>
+        </CardHeader>
+        <CardContent>
+        </CardContent>
+        <CardFooter>
+        </CardFooter>
+    </Card>
+    @if (ViewModel.Module != null)
+    {
+        @foreach (var (topic, index) in ViewModel.Module!.Topics.Select((t, i) => (t, i)))
+        {
+            @* <div class="topic-item"> *@
+            @*     <div><p>@topic.Name</p></div> *@
+            @* </div> *@
+            <Animate Type="AnimationType.SlideFade" Duration="0.3s"
+                     FromY="50px" ToY="0"
+                     FromOpacity="0" ToOpacity="1"
+                     Delay="@($"{index * 0.05}s")"
+                     Ease="EasingType.Ease_In_Out" Iteration="1" Style="opacity: 0">
+                <Tooltip Tip="@topic.Name" ShowBelow="@true">
+                    <Card Style="min-width: 10rem; max-width: 10rem; min-height: 10rem; max-height: 10rem">
+                        <CardHeader>
+                            @if (topic.Name.Length > 24)
+                            {
+                                <p>@(topic.Name[..20] + "...")</p>
+                            }
+                            else
+                            {
+                                <p>@topic.Name</p>
+                            }
+                        </CardHeader>
+                        <CardContent>
+                            @* <div style="display: flex; flex-direction: column;"> *@
+                            @*     <Input Label="Name" Placeholder="Name of your project" TItem="string" /> *@
+                            @*     <Input Label="Framework" Placeholder="Select" TItem="string" /> *@
+                            @* </div> *@
+                        </CardContent>
+                        <CardFooter>
+                            @* <div class="flex jcsb" style="width: 100%;"> *@
+                            @*     <Button Text="Cancel" Type="ButtonType.Outline" /> *@
+                            @*     <Button Text="Deploy" /> *@
+                            @* </div> *@
+                        </CardFooter>
+                    </Card>
+                </Tooltip>
+            </Animate>
+        }
+    }
+    <Card Style="width: inherit; max-width: inherit; min-width: 67vw; opacity: 0;">
+        <CardHeader>
+        </CardHeader>
+        <CardContent>
+        </CardContent>
+        <CardFooter>
+        </CardFooter>
+    </Card>
+</div>
+
+@code {
+    [CascadingParameter(Name = "ViewModel")]
+    public required ModuleDetailsViewModel ViewModel { get; set; }
+}

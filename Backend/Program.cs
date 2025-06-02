@@ -81,7 +81,6 @@ if (app.Environment.IsDevelopment())
         c.SwaggerEndpoint("/swagger/v1/swagger.json", "Kizuku API v1");
         c.RoutePrefix = "";
     });
-    // Entfernen Sie: app.MapOpenApi();
 }
 
 app.UseCors(myAllowSpecificOrigins);
