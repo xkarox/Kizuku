@@ -1,4 +1,5 @@
-﻿@using Frontend.Services.Interfaces
+﻿@using Frontend.Cookie
+@using Frontend.Services.Interfaces
 @using Microsoft.AspNetCore.Components.Authorization
 @inherits LayoutComponentBase
 @inject Initialization init
@@ -64,17 +65,16 @@
     private string _textColor = string.Empty;
     private string _themeIcon = string.Empty;
     
+    
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        // This initializes the theme for the components.
-        // Then you can use init.ToggleTheme() to toggle between light and dark modes.    
         if (firstRender)
         {
             await init.InitializeTheme();
             this.UpdateThemeColorAndIcon();
-        }; 
+        };
     }
-    
+
     private async Task HandleLogout()
     {
         await AuthServiceUi.Logout();

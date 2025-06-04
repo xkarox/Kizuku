@@ -1,4 +1,5 @@
 @page "/studyManagement/{moduleId}"
+@using Core.Entities
 @using Frontend.Pages.StudyManagement.Pages.ModuleDetails.Components
 @inherits Blazing.Mvvm.Components.MvvmComponentBase<ModuleDetailsViewModel>
 
@@ -36,6 +37,36 @@
     <Drawer Show="ViewModel.ShowAddTopic">
         <AddTopic></AddTopic>   
     </Drawer>
+
+    <Dialog Show="@ViewModel.ShowTopicInfo" Width="500px" OnClose="ViewModel.TopicDialogCloseHandlerCommand.Execute">
+        <Header>
+            <div class="flex-col">
+                <p class="large">@ViewModel.SelectedTopic.Name</p>
+                <p class="muted">@ViewModel.SelectedTopic.Description</p>
+            </div>
+        </Header>
+        <Content>
+            <div class="mbti">
+                @* <Combobox Placeholder="Select Status..." Items="@ViewModel.AvailableTopicStates" TItem="Status" Display="x => x.Name" *@
+                @*           SelectedItem="@ViewModel.CurrentSelectedState" OnItemSelect="x => ViewModel.CurrentSelectedState = x" *@
+                @*           Label="Status" Info="Change the topics current status"/> *@
+                <Select Label="Status" Info="Change the topics current status" Items="@ViewModel.AvailableTopicStates"
+                        Display="x => x.Name" TItem="Status"
+                        SelectedItem="@ViewModel.CurrentSelectedState" OnItemSelect="x => ViewModel.CurrentSelectedState = x">
+                </Select>
+            </div>
+        </Content>
+        <Footer>
+            <div style="width: 100%; display: flex; gap: 1rem">
+                <Button Text="Close" 
+                        Type="ButtonType.Secondary" 
+                        OnClick="ViewModel.TopicDialogCloseHandlerCommand.Execute" />
+                <Button Text="Delete" 
+                        Type="ButtonType.Secondary" 
+                        OnClick="ViewModel.RemoveTopicButtonHandlerCommand.ExecuteAsync" />
+            </div>
+        </Footer>
+    </Dialog>
 </CascadingValue>
 @code {
     [Parameter] public string moduleId { get; set; } = null!;

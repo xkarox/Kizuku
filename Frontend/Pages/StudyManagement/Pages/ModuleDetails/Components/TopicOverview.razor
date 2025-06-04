@@ -13,16 +13,18 @@
     {
         @foreach (var (topic, index) in ViewModel.Module!.Topics.Select((t, i) => (t, i)))
         {
-            @* <div class="topic-item"> *@
-            @*     <div><p>@topic.Name</p></div> *@
-            @* </div> *@
+            
             <Animate Type="AnimationType.SlideFade" Duration="0.3s"
                      FromY="50px" ToY="0"
                      FromOpacity="0" ToOpacity="1"
                      Delay="@($"{index * 0.05}s")"
                      Ease="EasingType.Ease_In_Out" Iteration="1" Style="opacity: 0">
-                <Tooltip Tip="@topic.Name" ShowBelow="@true">
-                    <Card Style="min-width: 10rem; max-width: 10rem; min-height: 10rem; max-height: 10rem">
+                <div @onclick="() => ViewModel.TopicInfoHandlerCommand.Execute(topic)"
+                        class="topic-card">
+                    <Card Style="min-width: 10rem; 
+                                max-width: 10rem; 
+                                min-height: 10rem; 
+                                max-height: 10rem;">
                         <CardHeader>
                             @if (topic.Name.Length > 24)
                             {
@@ -34,10 +36,9 @@
                             }
                         </CardHeader>
                         <CardContent>
-                            @* <div style="display: flex; flex-direction: column;"> *@
-                            @*     <Input Label="Name" Placeholder="Name of your project" TItem="string" /> *@
-                            @*     <Input Label="Framework" Placeholder="Select" TItem="string" /> *@
-                            @* </div> *@
+                            <div style="display: flex; flex-direction: column;">
+                                <p>@topic.Status?.Name</p>
+                            </div>
                         </CardContent>
                         <CardFooter>
                             @* <div class="flex jcsb" style="width: 100%;"> *@
@@ -46,8 +47,9 @@
                             @* </div> *@
                         </CardFooter>
                     </Card>
-                </Tooltip>
+                </div>
             </Animate>
+            
         }
     }
     <Card Style="width: inherit; max-width: inherit; min-width: 67vw; opacity: 0;">

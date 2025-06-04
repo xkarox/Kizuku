@@ -1,4 +1,5 @@
 using Backend.Infrastructure;
+using Backend.Infrastructure.Configurations.DefaultData;
 using Core;
 using Core.Entities;
 using Core.Errors.Authentication;
@@ -34,6 +35,7 @@ public class StudyManagementService(
             var query = 
                     db.Modules.Where(module => module.Id == moduleId)
                         .Include(module => module.Topics)
+                        .ThenInclude(topic => topic.Status)
                 .AsQueryable();
             var module = await query.FirstOrDefaultAsync();
             if (module is null)
@@ -53,18 +55,53 @@ public class StudyManagementService(
             var query = 
                 db.Modules.Where(module => module.Id == request.ModuleId)
                     .Include(module => module.Topics)
+                    .ThenInclude(topic => topic.Status)
                     .AsQueryable();
             var module = await query.FirstOrDefaultAsync();
             if (module is null)
                 return Result<Module>.Failure(new DatabaseError("Module not found"));
+            
             
             module.Topics.Add(new Topic
             {
                 Name = request.TopicName,
                 Description = request.TopicDescription,
                 CreatedAt = DateTime.UtcNow,
-                UpdatedAt = DateTime.UtcNow
+                UpdatedAt = DateTime.UtcNow,
+                StatusId = StatusDefinition.NotStarted.Id
             });
+            
+            await db.SaveChangesAsync();
+            return Result<Module>.Success(module);
+        }
+        catch (ArgumentNullException e)
+        {
+            logger.LogError(e.Message);
+            return Result<Module>.Failure(new DatabaseError(e.Message));
+        }
+        catch (DbUpdateException e)
+        {
+            logger.LogError(e.Message);
+            return Result<Module>.Failure(new DatabaseError(e.Message));
+        }
+    }
+
+    public async Task<Result> RemoveTopicFromModule(Guid moduleId, Guid topicId)
+    {
+        try
+        {
+            var query = 
+                db.Modules.Where(module => module.Id == moduleId)
+                    .Include(module => module.Topics)
+                    .AsQueryable();
+            var module = await query.FirstOrDefaultAsync();
+            if (module is null)
+                return Result.Failure(new DatabaseError("Module not found"));
+
+            var topicToDel = module.Topics.FirstOrDefault(topic => topic.Id == topicId);
+            if (topicToDel is null)
+                return Result.Failure(new DatabaseError("Topic not found"));
+            module.Topics.Remove(topicToDel);
             
             await db.SaveChangesAsync();
             return Result<Module>.Success(module);
@@ -114,6 +151,28 @@ public class StudyManagementService(
             return Result.Failure(result.Error);
         }
         return Result.Success();
+    }
+
+    public async Task<Result<IEnumerable<Status>>> GetTopicStates()
+    {
+        try
+        {
+            var query = db.Statuses.AsQueryable();
+            var status = await query.ToListAsync();
+            return Result<IEnumerable<Status>>.Success(status);
+        }
+        catch (ArgumentNullException e)
+        {
+            logger.LogError(e.Message);
+            return Result<IEnumerable<Status>>.Failure(
+                new DatabaseError(e.Message));
+        }
+        catch (DbUpdateException e)
+        {
+            logger.LogError(e.Message);
+            return Result<IEnumerable<Status>>.Failure(
+                new DatabaseError(e.Message));
+        }
     }
     
     private async Task<Result<Module>> Create(Module entity)

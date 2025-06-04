@@ -9,12 +9,13 @@ public interface IStudyManagementServiceUI
 {
     public Task<Result<Module>> CreateModule(CreateModuleRequest createModuleRequest);
     public Task<Result<IEnumerable<Module>>> GetModules();
+    public Task<Result<IEnumerable<Status>>> GetTopicStates();
     public Task<Result<Module>> UpdateModule(UpdateModuleRequest updateModuleRequest);
     public Task<Result<Guid>> DeleteModule(Guid id);
-
     public Task<Result<Module>> AddTopic(
         AddTopicToModuleRequest addTopicRequest);
-
+    public Task<Result> RemoveTopicFromModule(
+        Guid moduleId, Guid topicId);
     public Task<Result<Module>> GetModule(Guid moduleId);
 
 

@@ -58,18 +58,47 @@ public class StudyManagementController(
     [Route("module/addTopic")]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Module))]
     [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(IError))]
-    public async Task<IActionResult> AddTopic([FromBody] AddTopicToModuleRequest request)
+    public async Task<IActionResult> AddTopicToModule([FromBody] AddTopicToModuleRequest request)
     {
-        Console.WriteLine("Add topic");
         var modulesResult = await studyManagementService.AddTopicToModule(request);
         if (modulesResult.IsError)
         {
+            return BadRequest(modulesResult.Error);
+        }
+        return Ok(modulesResult.Value!);
+    }
+    
+    [Authorize]
+    [HttpGet]
+    [Route("topic/states")]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Module))]
+    [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(IError))]
+    public async Task<IActionResult> GetTopicStates()
+    {
+        var statesResult = await studyManagementService.GetTopicStates();
+        if (statesResult.IsError)
+        {
+            return BadRequest(statesResult.Error);
+        }
+        return Ok(statesResult.Value!);
+    }
+    
+    [Authorize]
+    [HttpDelete]
+    [Route("module/removeTopic/{moduleId}/{topicId}")]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Module))]
+    [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(IError))]
+    public async Task<IActionResult> RemoveTopicFromModule([FromRoute] Guid topicId, [FromRoute] Guid moduleId)
+    {
+        var modulesResult = await studyManagementService.RemoveTopicFromModule(moduleId, topicId);
+        if (modulesResult.IsError)
+        {
             
-            Console.WriteLine("Failed to add topic");
+            Console.WriteLine("Failed to remove topic");
             return BadRequest(modulesResult.Error);
         }
         Console.WriteLine("Success");
-        return Ok(modulesResult.Value!);
+        return Ok();
     }
     
     [Authorize]

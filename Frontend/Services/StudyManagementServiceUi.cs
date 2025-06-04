@@ -60,6 +60,26 @@ public class StudyManagementServiceUi(
         return Result<IEnumerable<Module>>.Success(getModulesResponse.Modules);
     }
 
+    public async Task<Result<IEnumerable<Status>>> GetTopicStates()
+    {
+        var response = await _httpClient.GetAsync("api/study_management/topic/states");
+        if (!response.IsSuccessStatusCode)
+        {
+            var error = await response.Content.ReadFromJsonAsync<Error>();
+            logger.Log(LogLevel.Debug, error != null ? error.Message : "Unknown error");
+            return Result<IEnumerable<Status>>.Failure(error ?? new Error("No error provided"));
+        }
+        var getStatesResponse = await response.Content.ReadFromJsonAsync<IEnumerable<Status>>();
+        if (getStatesResponse == null)
+        {
+            logger.Log(LogLevel.Debug, $"Get Modules returned nothing");
+            return Result<IEnumerable<Status>>.Failure(
+                new Error("Get Modules returned nothing"));
+        }
+        logger.Log(LogLevel.Debug, getStatesResponse.ToString());
+        return Result<IEnumerable<Status>>.Success(getStatesResponse);
+    }
+
     public async Task<Result<Module>> UpdateModule(UpdateModuleRequest updateModuleRequest)
     {
         if (updateModuleRequest == null)
@@ -153,6 +173,26 @@ public class StudyManagementServiceUi(
                 new Error($"Failed to deserialize Module after Add Topic: {addTopicRequest.TopicName}"));
         }
         return Result<Module>.Success(module);
+    }
+
+    public async Task<Result> RemoveTopicFromModule(Guid moduleId, Guid topicId)
+    {
+        if (moduleId == null || topicId == null)
+        {
+            logger.Log(LogLevel.Debug, $"Invalid Request");
+            return Result.Failure(new Error("Invalid Request"));
+        }
+        logger.Log(LogLevel.Debug, $"Removing Topic from Module: {topicId} from {moduleId}");
+        var response = await _httpClient.DeleteAsync(
+            $"api/study_management/module/removeTopic/{moduleId}/{topicId}");
+        if (!response.IsSuccessStatusCode)
+        {
+            logger.Log(LogLevel.Debug, $"Failed to delete Topic from Module: {topicId} from {moduleId}");
+            return Result.Failure(
+                new Error($"Failed to delete Topic from Module: {topicId} from {moduleId}"));
+        }
+        logger.Log(LogLevel.Debug, $"Topic deleted from Module: {topicId} from {moduleId}");
+        return Result.Success();
     }
 }
 

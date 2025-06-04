@@ -7,6 +7,11 @@
     height: 5% !important;
 }
 
+.sbc-ac-list {
+    top: 13rem !important;
+    left: 1.7rem !important;
+}
+
 .dark{
     scrollbar-color: white transparent;
     background: radial-gradient(circle at center bottom,rgba(137, 55, 219, 1) 1%, rgba(93, 39, 138, 1) 25%, rgba(9, 9, 11, 1) 55%) !important;

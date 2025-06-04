@@ -15,6 +15,11 @@ public partial class ModuleDetailsViewModel
     [ObservableProperty] private string _newTopicName = string.Empty;
     [ObservableProperty] private string? _newTopicDescription = string.Empty;
     [ObservableProperty] private Dictionary<string, string> _addTopicErrors= new();
+    [ObservableProperty] private bool _showTopicInfo = false;
+    [ObservableProperty] private Topic? _selectedTopic = null;
+    [ObservableProperty] private ICollection<Status>? _availableTopicStates = null;
+    [ObservableProperty] private Status? _currentSelectedState = null;
+    
 
     [RelayCommand]
     public async Task FetchModule(Guid moduleId)
@@ -22,9 +27,21 @@ public partial class ModuleDetailsViewModel
         var result = await studyManagementService.GetModule(moduleId);
         if (result.IsError)
         {
+            Console.WriteLine(result.Error);
             SetDummyModule();
         }
         Module = result!.Value!;
+    }
+    
+    [RelayCommand]
+    public async Task FetchTopicStates()
+    {
+        var result = await studyManagementService.GetTopicStates();
+        if (result.IsError)
+        {
+            Console.WriteLine($"Error fetching topic states: {result.Error}");
+        }
+        AvailableTopicStates = result!.Value! as ICollection<Status>;
     }
 
     [RelayCommand]
@@ -69,4 +86,35 @@ public partial class ModuleDetailsViewModel
             Name = "Failed to fetch module",
         };
     }
+
+    [RelayCommand]
+    public void TopicInfoHandler(Topic topic)
+    {
+        CurrentSelectedState = topic.Status;
+        if (AvailableTopicStates == null)
+            _ = FetchTopicStates();
+        SelectedTopic = topic;
+        ShowTopicInfo = true;
+    }
+    
+    [RelayCommand]
+    public void TopicDialogCloseHandler()
+    {
+        SelectedTopic = null;
+        ShowTopicInfo = false;
+    }
+
+    [RelayCommand]
+    public async Task RemoveTopicButtonHandler()
+    {
+        if (SelectedTopic == null) { return; }
+        var moduleId = SelectedTopic.ModuleId;
+        var topicId = SelectedTopic.Id;
+        await studyManagementService.RemoveTopicFromModule(moduleId, topicId);
+        _ = FetchModule(Module!.Id);
+        ShowTopicInfo = false;
+        SelectedTopic = null;
+    }
+    
+
 }

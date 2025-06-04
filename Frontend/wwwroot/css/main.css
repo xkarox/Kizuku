@@ -95,14 +95,12 @@ body {
     margin: 0 1rem 0 1rem;
 }
 
-   
-.topic-item
-{
-    min-width: 10rem;
-    min-height: 10rem;
-    max-width: 10rem;
-    max-height: 10rem;
-    border: 1px solid deeppink; 
-    border-radius: 20px; 
-    margin: 1rem 1rem 1rem 1rem
+.topic-card {
+    border: 1px solid #25252b;
+    border-radius: 0.5rem;
+    transition: border 0.3s ease-in-out;
+}
+
+.topic-card:hover{
+    border: 1px solid #8937DB;
 }
