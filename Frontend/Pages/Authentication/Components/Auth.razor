@@ -2,79 +2,152 @@
 @using Frontend.Services.Interfaces
 @using Frontend.StateContainers
 @using Frontend.ViewModels
+@using Syncfusion.Blazor.Inputs
+@using Syncfusion.Blazor.Buttons
 @inject IAuthenticationServiceUI AuthServiceUi 
 @inject NavigationManager NavigationManager
 @inject AuthViewModel ViewModel
 @inject AuthComponentStateContainer State
 
-<Card>
-    <CardHeader>
-        <div class="flex-row" style="justify-content: space-between;">
-            <div @onclick="ViewModel.SetLoginState" style="cursor: pointer">
-                <Text Content="Sign in" SizeInRem="2" Weight="FontWeights.W900"
-                      GradientColors="@(State.IsLoginState ? Colors.PrimarySecondary : Colors.TextDisabled)" ShowGradient/>
-            </div>
-            <div>
-                <Text Content="/" SizeInRem="2" Weight="FontWeights.W900"
-                      GradientColors="@Colors.PrimarySecondary" ShowGradient/>
-            </div>
-            <div @onclick="ViewModel.SetRegistrationState" style="cursor: pointer">
-                <Text Content="Sign up" SizeInRem="2" Weight="FontWeights.W900"
-                      GradientColors="@(State.IsLoginState ? Colors.TextDisabled : Colors.PrimarySecondary)" ShowGradient/>
-            </div>
-        </div>
-    </CardHeader>
-    
-    <CardContent>
-            @if (State.IsLoginState)
-            {
-                <Animate Type="AnimationType.Fade" FromOpacity="0" ToOpacity="100" Iteration="1"  Duration="0.3s">
-                    <div class="flex-col">
-                        <Input Label="Email" Placeholder="Your Email" TItem="string"
-                               @bind-Value="State.Email" Style="width: 15rem"/>
-                        <Input Label="Password" Placeholder="Your Password" TItem="string"
-                               @bind-Value="State.Password" Type="password" Style="width: 15rem"/>
-                        <Text Color="red" Content="@State.ErrorMessage" Style="max-width: 15rem"/>
-                    </div>
-                </Animate>
-            }
-            else // registration state
-            {
-                <Animate Type="AnimationType.Fade" FromOpacity="0" ToOpacity="100" Iteration="1" Duration="0.3s">
-                    <div class="flex-col">
-                        <Input Label="Username" Placeholder="Your desired username"
-                               @bind-Value="State.Username" TItem="string" Style="width: 15rem"/>
-                        <Input Label="Email" Placeholder="Your Email"
-                               @bind-Value="State.Email" TItem="string" Style="width: 15rem"/>
-                        <Input Label="Password" Placeholder="Your Password"
-                               @bind-Value="State.Password" TItem="string" Type="password" Style="width: 15rem"/>
-                        <Input Label="Repeat Password" Placeholder="Repeat Your Password"
-                               @bind-Value="State.RepeatPassword" TItem="string" Type="password" Style="width: 15rem"/>
-                        <Text Color="red" Content="@State.RegistrationErrorMessage" Style="max-width: 15rem"/>
-                        <Text Color="red" Content="@State.ErrorMessage" Style="max-width: 15rem"/>
-                    </div>
-                </Animate>
-            }
-    </CardContent>
-    
-    <CardFooter>
-        <Button Type="ButtonType.Outline" Icon="arrow_back" Style="margin: 1rem"
-                OnClick="ViewModel.HandleBackButtonClicked"></Button>
+<section class="bg-transparent dark:bg-transparent">
+    <div class="flex items-center justify-center min-h-screen">
+        <div class="w-full max-w-md rounded-lg p-4 p-md-6 py-12 bg-gray-800">
+            <div class="flex justify-center mb-6">
+                <img class="mr-2" src="assets/Logoipsum.svg" alt="company logo" />
+                <h2 class="text-center text-gray-900 dark:text-white text-xl font-semibold">Kizuku</h2>
+            </div> 
         @if (State.IsLoginState)
         {
-            <Button Type="ButtonType.Outline" Style="margin: 1rem;"
-                    Class="kizuku-button"
-                    OnClick="ViewModel.HandleLogin" disabled="@State.IsProcessing">
-                @if (State.IsProcessing) { <span>Processing...</span> } else { <span>Sign In</span> }
-            </Button>
+            <h2 class="text-2xl font-semibold text-gray-900 dark:text-white text-center mb-2">Sign in</h2>
+            <p class="text-md text-center text-gray-700 dark:text-gray-300">Enter your credentials to sign in</p>
+            <form action="#" class="mt-6 mb-6" onsubmit="event.preventDefault();">
+                <div class="mb-4">
+                    <label class="block mb-1 text-sm font-medium text-gray-700 dark:text-gray-300">Email</label>
+                    <SfTextBox CssClass="e-bigger"
+                               Type="InputType.Email"
+                               Placeholder="Email"
+                               FloatLabelType="FloatLabelType.Never"
+                               aria-label="enter your email address"
+                               role="textbox"
+                               @bind-Value="@State.Email">
+                    </SfTextBox>
+                </div>
+                <div class="mb-5 relative">
+                    <label class="block mb-1 text-sm font-medium text-gray-700 dark:text-gray-300">Password</label>
+                    <SfTextBox CssClass="e-bigger bg-none"
+                               Type="InputType.Password"
+                               Placeholder="Password"
+                               FloatLabelType="FloatLabelType.Never"
+                               aria-label="enter your email password"
+                               role="textbox"
+                               @bind-Value="State.Password"></SfTextBox>
+                </div>
+                <div class="e-bigger mt-6">
+                    <SfButton
+                        CssClass="w-full e-primary e-btn"
+                        type="submit"
+                        @onclick="ViewModel.HandleLoginCommand.Execute"
+                        aria-label="sign in" role="button">Sign in</SfButton>
+                </div>
+            </form>
+            <div>
+                            <span class="flex items-center justify-center gap-2">
+                                <p class="text-center text-base text-gray-900 dark:text-white">Don't have an account yet?</p>
+                                <SfButton
+                                    Type="button"
+                                    role="button"
+                                    @onclick="ViewModel.SetRegistrationState">
+                                    Sign Up
+                                </SfButton>
+                            </span>
+            </div>
         }
-        else
+        else // registration state
         {
-            <Button Type="ButtonType.Outline" Style="margin: 1rem;"
-                    Class="kizuku-button"
-                    OnClick="ViewModel.HandleRegistration" disabled="@State.IsProcessing">
-                @if (State.IsProcessing) { <span>Processing...</span> } else { <span>Sign Up</span> }
-            </Button>
+            <h2 class="text-2xl font-semibold text-center mb-2 text-gray-900 dark:text-white">Sign up</h2>
+            <p class="text-md text-center text-gray-700 dark:text-gray-300">Enter your information to sign up</p>
+            <div class="mt-6">
+                <form action="#" class="mb-6" onsubmit="event.preventDefault();">
+                    <div class="mb-4">
+                        <label class="block mb-1 text-sm font-medium text-gray-700 dark:text-gray-300">Name</label>
+                        <SfTextBox CssClass="e-bigger" Type="InputType.Text" Placeholder="Name"
+                                   FloatLabelType="FloatLabelType.Never" aria-label="enter your name" role="textbox">
+                        </SfTextBox>
+                    </div>
+                    <div class="mb-4">
+                        <label class="block mb-1 text-sm font-medium text-gray-700 dark:text-gray-300">Email</label>
+                        <SfTextBox CssClass="e-bigger" Type="InputType.Email" Placeholder="Email"
+                                   FloatLabelType="FloatLabelType.Never" aria-label="enter your email address" role="textbox">
+                        </SfTextBox>
+                    </div>
+                    <div class="mb-4 relative">
+                        <label class="block mb-1 text-sm font-medium text-gray-700 dark:text-gray-300">Password</label>
+                        <SfTextBox CssClass="e-bigger" Type="InputType.Password" Placeholder="Password"
+                                   FloatLabelType="FloatLabelType.Never" aria-label="enter your email password" role="textbox">
+                        </SfTextBox>
+                    </div>
+                    <div class="e-bigger">
+                        <SfButton CssClass="w-full text-base e-primary e-btn" type="submit" aria-label="sign up"
+                                  role="button">Sign up</SfButton>
+                    </div>
+                </form>
+            </div>
+            <div class="mt-10">
+                <span class="flex items-center justify-center gap-2 mt-5">
+                    <p class="text-center text-base text-gray-900 dark:text-white">Already have an account?</p>
+                    <SfButton
+                        Type="button"
+                        role="button"
+                        @onclick="ViewModel.SetLoginState">
+                                        Sign In
+                    </SfButton>
+                </span>
+            </div>
         }
-    </CardFooter>
-</Card>
+        </div>
+    </div>
+</section>
+
+        @* <Card> *@
+@*     <CardHeader> *@
+@*         <div class="flex-row" style="justify-content: space-between;"> *@
+@*             <div @onclick="ViewModel.SetLoginState" style="cursor: pointer"> *@
+@*                 <Text Content="Sign in" SizeInRem="2" Weight="FontWeights.W900" *@
+@*                       GradientColors="@(State.IsLoginState ? Colors.PrimarySecondary : Colors.TextDisabled)" ShowGradient/> *@
+@*             </div> *@
+@*             <div> *@
+@*                 <Text Content="/" SizeInRem="2" Weight="FontWeights.W900" *@
+@*                       GradientColors="@Colors.PrimarySecondary" ShowGradient/> *@
+@*             </div> *@
+@*             <div @onclick="ViewModel.SetRegistrationState" style="cursor: pointer"> *@
+@*                 <Text Content="Sign up" SizeInRem="2" Weight="FontWeights.W900" *@
+@*                       GradientColors="@(State.IsLoginState ? Colors.TextDisabled : Colors.PrimarySecondary)" ShowGradient/> *@
+@*             </div> *@
+@*         </div> *@
+@*     </CardHeader> *@
+@*      *@
+@*     <CardContent> *@
+@*              *@
+@*     </CardContent> *@
+@*      *@
+@*     <CardFooter> *@
+@*         <Button Type="ButtonType.Outline" Icon="arrow_back" Style="margin: 1rem" *@
+@*                 OnClick="ViewModel.HandleBackButtonClicked"></Button> *@
+@*         @if (State.IsLoginState) *@
+@*         { *@
+@*             <Button Type="ButtonType.Outline" Style="margin: 1rem;" *@
+@*                     Class="kizuku-button" *@
+@*                     OnClick="ViewModel.HandleLogin" disabled="@State.IsProcessing"> *@
+@*                 @if (State.IsProcessing) { <span>Processing...</span> } else { <span>Sign In</span> } *@
+@*             </Button> *@
+@*         } *@
+@*         else *@
+@*         { *@
+@*             <Button Type="ButtonType.Outline" Style="margin: 1rem;" *@
+@*                     Class="kizuku-button" *@
+@*                     OnClick="ViewModel.HandleRegistration" disabled="@State.IsProcessing"> *@
+@*                 @if (State.IsProcessing) { <span>Processing...</span> } else { <span>Sign Up</span> } *@
+@*             </Button> *@
+@*         } *@
+@*     </CardFooter> *@
+@* </Card> *@

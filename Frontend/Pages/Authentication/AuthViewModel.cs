@@ -1,5 +1,6 @@
 using System.Net.Mail;
 using Blazing.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 using Core;
 using Core.Requests;
 using Frontend.Services.Interfaces;
@@ -8,7 +9,7 @@ using Microsoft.AspNetCore.Components;
 
 namespace Frontend.ViewModels;
 
-public class AuthViewModel
+public partial class AuthViewModel
     (IAuthenticationServiceUI authServiceUi,
      AuthComponentStateContainer state,
      NavigationManager navigationManager)
@@ -18,6 +19,8 @@ public class AuthViewModel
     {
         navigationManager.NavigateTo("/");
     }
+    
+    [RelayCommand]
     public async Task HandleLogin()
     {
         state.IsProcessing = true;

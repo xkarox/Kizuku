@@ -1,0 +1,28 @@
+* {
+    --animate-popIn-01: popIn 0.1s ease-in-out 1;
+    --animate-popIn-03: popIn 0.3s ease-in-out 1;
+    --animate-popIn-05: popIn 0.5s ease-in-out 1;
+}
+
+.animate-popIn-slow {
+    animation: var(--animate-popIn-05);
+}
+
+.animate-popIn-normal {
+    animation: var(--animate-popIn-03);
+}
+
+.animate-popIn-fast {
+    animation: var(--animate-popIn-01);
+}
+
+@keyframes popIn {
+    0% {
+        transform: translateY(50px);
+        opacity: 0;
+    }
+    100% {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}

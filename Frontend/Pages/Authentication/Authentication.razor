@@ -4,16 +4,7 @@
 
 
 <div class="authentication-container">
-    <Animate Type="AnimationType.SlideFade" Duration="0.3s" 
-             FromY="50px" ToY="0" Ease="EasingType.Ease_Out" Iteration="1" >
-        <Auth /> 
-    </Animate>
-    
+    <div>
+        <Auth />
+    </div>
 </div>
-
-@code {
-    private void NavigateToIndex()
-    {
-        NavigationManager.NavigateTo("/");
-    }
-}

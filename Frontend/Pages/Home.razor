@@ -1,27 +1,8 @@
 ﻿@page "/"
-@using Frontend.Services.Interfaces
-@using Microsoft.AspNetCore.Components.Authorization
-
-
 <PageTitle>Kizuku</PageTitle>
 
 <div class="center-hv">
-    <Animate Type="AnimationType.SlideFade" Duration="0.3s"
-             FromY="50px" ToY="0" Ease="EasingType.Ease_Out" Iteration="1" >
-        <Grid Columns="1" Rows="2" ColGap="2rem" Class="home-grid">
-            
-            <Text Content="Kizuku" SizeInRem="10" Weight="FontWeights.W900"
-                  Color="@Colors.Primary"/>
-                  @* GradientColors="@Colors.PrimarySecondary" ShowGradient/> *@
-
-            <Separator Style="margin-bottom: 1rem"/>
-            <div style="display: flex; align-items: center; justify-content: center">
-            </div>
-        </Grid>
-    </Animate>
+    <div class="animate-popIn-fast">
+        <text class="font-black text-9xl text-purple-600">Kizuku</text>
+    </div>
 </div>
-
-
-@code {
-
-}

@@ -1,60 +1,64 @@
 ﻿@using Frontend.Cookie
 @using Frontend.Services.Interfaces
 @using Microsoft.AspNetCore.Components.Authorization
+@using Syncfusion.Blazor.Navigations
+@using Syncfusion.Blazor.Buttons
 @inherits LayoutComponentBase
-@inject Initialization init
 @inject IAuthenticationServiceUI AuthServiceUi
 @inject NavigationManager NavigationManager
 
-<div @onclick="init.HandleMainLayoutClickEvent">
-    <NavigationMenu>
-        <div class="flex-row" style="justify-content: space-between; height:  5vh">
-            <div class="flex-row">
-                <div @onclick="NavigateToIndex" class="center-hv" style="cursor: pointer;margin: 0.5rem 1.5rem 0.5rem 1rem;">
-                    <Text Content="Kizuku" Color="@Colors.Primary"
-                          Weight="FontWeights.W600" SizeInRem="2"></Text>
-                </div>
-                <AuthorizeView>
-                    <Authorized>
-                        <NavMenuItem Id="nav-modules" Title="Modules" Url="/studyManagement"/>
-                    </Authorized>
-                </AuthorizeView>
+<div >
+    <section class="bg-gray-50 dark:bg-gray-950">
+        <div>
+            <div>
+            @* <div class="border border-r-0 border-l-0 border-gray-200 dark:border-gray-600"> *@
+                <SfAppBar CssClass="shadow-none ">
+                    <div class="px-4 py-5 flex items-center justify-between">
+                        <div class="flex items-center" @onclick="NavigateToIndex" style="cursor: pointer;">
+                            <img class="mr-3 h-7" src="assets/Logoipsum.svg" alt="company logo" />
+                            <span class="text-lg font-semibold text-gray-900 dark:text-white">Kizuku</span>
+                        </div>
+                        <div class="e-appbar-spacer"></div>
+                        <div class="hidden lg:block flex items-center pr-4">
+    
+                        </div>
+                        <div class="flex items-center">
+                            <AuthorizeView>
+                                <Authorized>
+                                    <SfButton Type="button" role="button" @onclick="NavigateToStudyManagement">
+                                        Modules
+                                    </SfButton>
+                                </Authorized>
+                            </AuthorizeView>
+                            @if (!IsAuthenticationPage())
+                            {
+                                <AuthorizeView>
+                                    <NotAuthorized>
+                                        <SfButton Type="button" role="button" @onclick="NavigateToAuthentication">
+                                            Login
+                                        </SfButton>
+                                    </NotAuthorized>
+                                    <Authorized>
+                                        <SfButton Type="button" role="button" @onclick="HandleLogout">
+                                            Logout
+                                        </SfButton>
+                                    </Authorized>
+                                </AuthorizeView>
+                            }
+                            <AuthorizeView>
+                                <Authorized>
+                                    <span class="e-avatar e-avatar-small e-avatar-circle" @onclick="NavigateToUserinfo" style="cursor: pointer">
+                                        <img src="https://static.vecteezy.com/system/resources/thumbnails/020/765/399/small/default-profile-account-unknown-icon-black-silhouette-free-vector.jpg" alt="profile picture"/>
+                                    </span>
+                                </Authorized>
+                            </AuthorizeView>
+                        </div>
+                    </div>
+                </SfAppBar>
             </div>
-            <AuthorizeView>
-                <NotAuthorized>
-                    <div class="flex-row">
-                        @if (!IsAuthenticationPage())
-                        {
-                            <Button OnClick="NavigateToAuthentication"
-                                    Style="border: none; height: 36px"
-                                    Class="kizuku-button">
-                                <span>
-                                    Sign In
-                                </span>
-                            </Button>
-                        }
-
-                        <Button Type="ButtonType.Icon" Icon="@_themeIcon" OnClick="ToggleTheme"
-                                Style="margin: 0.5rem"></Button>
-                    </div>
-                </NotAuthorized>
-                <Authorized>
-                    <div class="flex-row center-hv">
-                        <NavMenuItem Id="nav-user-info" Title="User Info" Url="/user-info"/>
-                        <Button OnClick="HandleLogout"
-                                Style="border: none; height: 36px"
-                                Class="kizuku-button">
-                            <span>
-                                Sign Out
-                            </span>
-                        </Button>
-                        <Button Type="ButtonType.Icon" Icon="@_themeIcon" OnClick="ToggleTheme"
-                                Style="margin: 0.5rem"></Button>
-                    </div>
-                </Authorized>
-            </AuthorizeView>
         </div>
-    </NavigationMenu>
+    </section>
+    
     <div style="height: 95vh;" class="center-h">
         @Body
     </div>
@@ -62,18 +66,7 @@
 
 @code
 {
-    private string _textColor = string.Empty;
-    private string _themeIcon = string.Empty;
     
-    
-    protected override async Task OnAfterRenderAsync(bool firstRender)
-    {
-        if (firstRender)
-        {
-            await init.InitializeTheme();
-            this.UpdateThemeColorAndIcon();
-        };
-    }
 
     private async Task HandleLogout()
     {
@@ -90,25 +83,17 @@
     {
         NavigationManager.NavigateTo("/");
     }
-    
-    private void NavigateToModules()
+
+    private void NavigateToStudyManagement()
     {
-        NavigationManager.NavigateTo("/Modules");
+        NavigationManager.NavigateTo("/studyManagement");
+    }
+
+    private void NavigateToUserinfo()
+    {
+        NavigationManager.NavigateTo("/user-info");
     }
     
-    private void ToggleTheme()
-    {
-        init.ToggleTheme();
-        this.UpdateThemeColorAndIcon();
-    }
-    
-    private void UpdateThemeColorAndIcon()
-    {
-        var currentTheme = init.CurrentTheme;
-        _textColor = currentTheme == "light" ? "black" : "white";
-        _themeIcon = currentTheme == "light" ? "light_mode" : "dark_mode"; 
-        StateHasChanged();
-    }
 
     private bool IsAuthenticationPage()
     {

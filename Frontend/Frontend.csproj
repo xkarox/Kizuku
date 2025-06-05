@@ -16,6 +16,8 @@
         <PackageReference Include="Microsoft.Extensions.Http" Version="9.0.4" />
         <PackageReference Include="Microsoft.Extensions.Logging" Version="9.0.4" />
         <PackageReference Include="Microsoft.Extensions.Logging.Configuration" Version="9.0.4" />
+        <PackageReference Include="Syncfusion.Blazor" Version="29.2.8" />
+        <PackageReference Include="Syncfusion.Blazor.Themes" Version="29.2.8" />
         <PackageReference Include="Sysinfocus.AspNetCore.Components" Version="0.0.3" />
     </ItemGroup>
 

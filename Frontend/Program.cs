@@ -11,6 +11,7 @@ using Frontend.StateContainers;
 using Frontend.ViewModels;
 using Microsoft.AspNetCore.Components.Authorization;
 using Sysinfocus.AspNetCore.Components;
+using Syncfusion.Blazor;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");
@@ -55,6 +56,6 @@ builder.Services.AddHttpClient("API", client =>
 
 builder.Logging.AddConfiguration(builder.Configuration
     .GetSection("Logging"));
-    
+builder.Services.AddSyncfusionBlazor();
 
 await builder.Build().RunAsync();
