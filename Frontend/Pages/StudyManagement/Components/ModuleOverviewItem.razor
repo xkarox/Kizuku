@@ -1,35 +1,45 @@
 @using System.Drawing
 @using Core.Entities
+@using Syncfusion.Blazor.ProgressBar
+@using Syncfusion.Blazor.Buttons
+@using Syncfusion.Blazor.Cards
 <div class="module-overview-item center-hv" style="margin: @Margin">
     @if (!Dummy)
     {
-        <Card>
+        <SfCard>
             <CardContent>
                 <div class="flex-col space-between">
                 
-                    <div class="module-overview-item-content center-hv flex-row">
-                        <Text Content="@FormatNameToMaxLength21(Module.Name)" Weight="FontWeights.W500" SizeInRem="1"></Text>
-                        <Separator Vertical></Separator>
+                    <div class="module-overview-item-content center-hv flex-row text-white font-light">
+                        <text>@FormatNameToMaxLength21(Module.Name)</text>
+                        <div class="vl"></div>
                         <div class="center-h flex-row">
-                            <Text Content="@(_percent + "%")" Weight="FontWeights.W300"
-                                  SizeInRem="1"></Text>
+                            <text>@(_percent + "%")</text>
                         </div>
-                        <Separator Vertical></Separator>
+                        <div class="vl"></div>
                         <div class="center-h flex-row" id="module-item-buttons">
-                            <Button Type="ButtonType.Icon" Icon="keyboard_arrow_right" Size="ButtonSize.Regular" class="module-item-button"
-                                    OnClick="@(() => ViewModel.SelectModuleButtonHandlerCommand.Execute(Module))"></Button>
-                            <Button Type="ButtonType.Icon" Icon="delete" Size="ButtonSize.Regular" class="module-item-button"
-                                    OnClick="() => ViewModel.DeleteModuleButtonHandler(Module)"></Button>
+                            <SfButton Type="button" role="button" CssClass="e-normal flex-col justify-center items-center" 
+                                      OnClick="@(() => ViewModel.SelectModuleButtonHandlerCommand.Execute(Module))">
+                                <SfIcon Name="IconName.ChevronRight" ></SfIcon>
+                            </SfButton>
+                            <div style="margin: 0 1rem 0 1rem;"></div>
+                            <SfButton Type="button" role="button" CssClass="e-normal flex-col justify-center items-center"
+                                      OnClick="() => ViewModel.DeleteModuleButtonHandler(Module)">
+                                <SfIcon Name="IconName.Trash" ></SfIcon>
+                            </SfButton>
                         </div>
                     </div>
-                    
-                    @* <div class="progress-bar-module-overview-item" style="width: @(_percent ?? "0%")"></div> *@
-                    <div class="progress-bar-module-overview-item">
-                        <Progress Percent="_percent ?? 0" ShowLabel="@false"></Progress>
+                    <div style="padding: 0.5rem;">
+                        <SfProgressBar Type="ProgressType.Linear" Height="12"
+                                       Value="@((_percent as Double?) ?? 0.0)" Minimum="0" Maximum="100"
+                                       IsIndeterminate="@true"
+                                       IsActive="@true">
+                            <ProgressBarAnimation Enable="true" Duration="2000" Delay="0" />
+                        </SfProgressBar>
                     </div>
                 </div>
             </CardContent>
-        </Card>
+        </SfCard>
     }
 </div>
 @code { 

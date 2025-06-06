@@ -1,5 +1,6 @@
 @import "kizukuWind.css";
 
+
 body {
     margin: 1rem !important;
     padding: 0;
@@ -8,7 +9,16 @@ body {
     max-height: 100vh !important;
     scroll-behavior: smooth;
     min-width: 800px;
-    background: radial-gradient(circle at center bottom,rgba(137, 55, 219, 1) 1%, rgba(93, 39, 138, 1) 40%, rgb(55, 65, 81) 70%);
+    background: radial-gradient(circle at center bottom,rgba(137, 55, 219, 1) 1%, rgba(93, 39, 138, 1) 40%, rgb(0, 0, 0) 70%);
+}
+
+hr {
+    display: block;
+    height: 1px;
+    border: 0;
+    border-top: 1px solid gray;
+    margin: 1em 0;
+    padding: 0;
 }
 
 .center-hv {

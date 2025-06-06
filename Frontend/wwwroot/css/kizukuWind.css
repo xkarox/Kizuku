@@ -1,7 +1,7 @@
 * {
-    --animate-popIn-01: popIn 0.1s ease-in-out 1;
-    --animate-popIn-03: popIn 0.3s ease-in-out 1;
-    --animate-popIn-05: popIn 0.5s ease-in-out 1;
+    --animate-popIn-01: popIn 0.1s ease-in-out forwards;
+    --animate-popIn-03: popIn 0.3s ease-in-out forwards;
+    --animate-popIn-05: popIn 0.5s ease-in-out forwards;
 }
 
 .animate-popIn-slow {
@@ -25,4 +25,9 @@
         transform: translateY(0);
         opacity: 1;
     }
+}
+
+.vl {
+    border-left: 1px solid gray;
+    height: 90%;
 }

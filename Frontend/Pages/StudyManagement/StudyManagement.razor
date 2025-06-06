@@ -1,43 +1,43 @@
 @page "/studyManagement"
 @using Frontend.ViewModels
 @using Frontend.Pages.StudyManagement.Components
+@using Syncfusion.Blazor.Buttons
 @inject NavigationManager NavigationManager
 @inherits Blazing.Mvvm.Components.MvvmComponentBase<StudyManagementViewModel>
 <CascadingValue Value="@ViewModel" Name="ViewModel">
-    <Animate Type="AnimationType.SlideFade" Duration="0.3s"
-             FromY="50px" ToY="0" Ease="EasingType.Ease_Out" Iteration="1" >
-        <div class="flex-col" style="max-width: 67vw; min-width: 67vw;">
-            <Animate Type="AnimationType.SlideFade" Duration="0.3s"
-                     FromY="50px" ToY="0" Ease="EasingType.Ease_Out" Iteration="1" >
-                <div class="flex-row center-v" style="justify-content: space-between !important;min-width: 67vw; max-width: 67vw">
-                    <div class="flex-row center-v">
-                        <Button Type="ButtonType.Outline" Icon="arrow_back" Style="margin: 1rem"
-                                OnClick="NavigateToIndex" Size="ButtonSize.Large"></Button>
-                        <Text SizeInRem="3" Content="Modules" Color="@Colors.Primary"></Text>
-                    </div>
-                    <div>
-                        <Button Type="ButtonType.Outline" Icon="add" Style="margin: 1rem;"
-                                OnClick="ViewModel.AddModuleButtonHandlerCommand.Execute" Size="ButtonSize.Large"></Button>
-                    </div>
+        <div class="flex-col animate-popIn-normal" style="max-width: 67vw; min-width: 67vw;">
+            <div class="flex-row center-v" style="justify-content: space-between !important;min-width: 67vw; max-width: 67vw">
+                
+                <div class="flex-row center-v animate-popIn-normal">
+                    <SfButton Type="button" role="button" CssClass="e-normal flex-col justify-center items-center"
+                              OnClick="NavigateToIndex">
+                        <SfIcon Name="IconName.ChevronLeft" ></SfIcon>
+                    </SfButton>
+                    <text class="text-5xl font-semibold text-purple-600 ml-5">Modules</text>
                 </div>
-            </Animate>
-            <Separator Style="margin-bottom: 2rem"></Separator>
-                <div class="scrollable" style="margin-bottom: 2rem; padding-top: 2rem;">
-                    @foreach (var (module, index) in ViewModel.Modules.Select((m, i) => (m, i)))
-                    {
-                        <Animate Type="AnimationType.SlideFade" Duration="0.3s"
-                                 FromY="50px" ToY="0"
-                                 FromOpacity="0" ToOpacity="1"
-                                 Delay="@($"{index * 0.1}s")"
-                                 Ease="EasingType.Ease_In_Out" Iteration="1" Style="opacity: 0">
-                            <ModuleOverviewItem Module="@module"></ModuleOverviewItem>
-                        </Animate>
-                    }
-                     
-                    <ModuleOverviewItem Module="@null" Dummy="@true"></ModuleOverviewItem>
+                
+                <div>
+                    @* <Button Type="ButtonType.Outline" Icon="add" Style="margin: 1rem;" *@
+                    @*         OnClick="ViewModel.AddModuleButtonHandlerCommand.Execute" Size="ButtonSize.Large"></Button> *@
+                    <SfButton Type="button" role="button" CssClass="e-normal flex-col justify-center items-center"
+                              OnClick="ViewModel.AddModuleButtonHandlerCommand.Execute">
+                        <SfIcon Name="IconName.Plus" ></SfIcon>
+                    </SfButton>
                 </div>
+                
+            </div>
+            <hr/>
+            <div class="scrollable flex-col center-h" style="margin-bottom: 2rem; padding-top: 2rem;">
+                @foreach (var (module, index) in ViewModel.Modules.Select((m, i) => (m, i)))
+                {
+                    <div class="animate-popIn-normal" style="animation-delay: @(0.1 * index)s; opacity: 0">
+                        <ModuleOverviewItem Module="@module"></ModuleOverviewItem>
+                    </div>
+                }
+            
+                <ModuleOverviewItem Module="@null" Dummy="@true"></ModuleOverviewItem>
+            </div>
         </div>
-    </Animate>
     
     <Drawer Show="@ViewModel.ShowCreateNewModule">
         <div style="min-width: 40rem; max-width: 40rem">
